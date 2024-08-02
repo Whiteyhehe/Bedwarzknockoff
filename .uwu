@@ -23,7 +23,7 @@ local diamondAmount = 10000
 local cooldown = 0.001
 
 -- Whitelist setup
-local whitelist = {"whiteyhsw", "l8rwannabebacon", "monkeyboyou1C2"} -- Add whitelisted usernames here
+local whitelist = {"whiteyhsw", "l8rwannabebacon", "monkeyboyou1C2", "mymanuaintwinning"} -- Add whitelisted usernames here
 
 -- Function to check if a player is whitelisted
 local function isWhitelisted(player)
