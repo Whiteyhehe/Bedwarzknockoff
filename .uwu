@@ -69,15 +69,43 @@ end
 local killAuraActive = false
 local RunService = game:GetService("RunService")
 local killAuraConnection
+local range = 10 -- Define the range within which players will be targeted
+
+-- Define the whitelist table
+local whitelist = {
+    "l8rwannabebacon",
+    "monkeyboyou1C2",
+    "mymanuaintwinning"
+}
+
+-- Function to check if a player is whitelisted
+local function isWhitelisted(player)
+    for _, name in pairs(whitelist) do
+        if player.Name == name then
+            return true
+        end
+    end
+    return false
+end
 
 local function startKillAura()
     killAuraConnection = RunService.RenderStepped:Connect(function()
+        local localPlayer = game:GetService("Players").LocalPlayer
+        if not localPlayer.Character then return end
+        
+        local localPlayerPosition = localPlayer.Character:FindFirstChild("HumanoidRootPart").Position
+
         for _, player in pairs(game:GetService("Players"):GetPlayers()) do
-            if player ~= game:GetService("Players").LocalPlayer and player.Character and not isWhitelisted(player) then
-                local args = {
-                    [1] = player.Character
-                }
-                game:GetService("Players").LocalPlayer.Character:FindFirstChild("Wooden Sword").ClientHandler.DetectDamage:FireServer(unpack(args))
+            if player ~= localPlayer and player.Character and player.Character:FindFirstChild("HumanoidRootPart") and not isWhitelisted(player) then
+                local targetPlayerPosition = player.Character:FindFirstChild("HumanoidRootPart").Position
+                local distance = (localPlayerPosition - targetPlayerPosition).Magnitude
+                
+                if distance <= range then
+                    local args = {
+                        [1] = player.Character
+                    }
+                    localPlayer.Character:FindFirstChild("Wooden Sword").ClientHandler.DetectDamage:FireServer(unpack(args))
+                end
             end
         end
     end)
@@ -89,6 +117,9 @@ local function stopKillAura()
         killAuraConnection = nil
     end
 end
+
+
+startKillAura()
 
 -- Function to change walk speed
 local function changeWalkSpeed(speed)
