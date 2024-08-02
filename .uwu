@@ -1,6 +1,6 @@
 -- Initialize Orion Library
 local OrionLib = loadstring(game:HttpGet(('https://raw.githubusercontent.com/shlexware/Orion/main/source')))()
-local Window = OrionLib:MakeWindow({Name = "Bedwarz Script - Made by synoslucky", HidePremium = false, SaveConfig = true, ConfigFolder = "OrionTest"})
+local Window = OrionLib:MakeWindow({Name = "Bedwarz Script - Made by mymanuaintwinning", HidePremium = false, SaveConfig = true, ConfigFolder = "OrionTest"})
 
 -- Create the main tab
 local MainTab = Window:MakeTab({
