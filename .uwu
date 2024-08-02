@@ -1,0 +1,245 @@
+-- Initialize Orion Library
+local OrionLib = loadstring(game:HttpGet(('https://raw.githubusercontent.com/shlexware/Orion/main/source')))()
+local Window = OrionLib:MakeWindow({Name = "Bedwarz Script - Made by synoslucky", HidePremium = false, SaveConfig = true, ConfigFolder = "OrionTest"})
+
+-- Create the main tab
+local MainTab = Window:MakeTab({
+    Name = "Main",
+    Icon = "rbxassetid://4483345998",
+    PremiumOnly = false
+})
+
+-- Create the misc tab
+local MiscTab = Window:MakeTab({
+    Name = "Misc",
+    Icon = "rbxassetid://4483345998",
+    PremiumOnly = false
+})
+
+-- Variables to store the amount and cooldown
+local emeraldAmount = 10000
+local ironAmount = 10000
+local diamondAmount = 10000
+local cooldown = 0.001
+
+-- Function to give Emeralds
+local givingEmeralds = false
+local function giveEmeralds()
+    while givingEmeralds do
+        for i = 1, emeraldAmount do
+            local args = {
+                [1] = "98F06DF3-417F-4724-8684-B090920322B1",
+                [2] = "Emerald",
+                [3] = true
+            }
+            game:GetService("ReplicatedStorage").Remotes.DestroyBlock:FireServer(unpack(args))
+            wait(cooldown)
+        end
+    end
+end
+
+-- Function to give Iron
+local givingIron = false
+local function giveIron()
+    while givingIron do
+        for i = 1, ironAmount do
+            local args = {
+                [1] = "98F06DF3-417F-4724-8684-B090920322B1",
+                [2] = "Iron",
+                [3] = true
+            }
+            game:GetService("ReplicatedStorage").Remotes.DestroyBlock:FireServer(unpack(args))
+            wait(cooldown)
+        end
+    end
+end
+
+-- Function to give Diamonds
+local givingDiamonds = false
+local function giveDiamonds()
+    while givingDiamonds do
+        for i = 1, diamondAmount do
+            local args = {
+                [1] = "98F06DF3-417F-4724-8684-B090920322B1",
+                [2] = "Diamond",
+                [3] = true
+            }
+            game:GetService("ReplicatedStorage").Remotes.DestroyBlock:FireServer(unpack(args))
+            wait(cooldown)
+        end
+    end
+end
+
+-- Function to activate kill aura
+local killAuraActive = false
+local RunService = game:GetService("RunService")
+local killAuraConnection
+
+local function startKillAura()
+    killAuraConnection = RunService.RenderStepped:Connect(function()
+        for _, player in pairs(game:GetService("Players"):GetPlayers()) do
+            if player ~= game:GetService("Players").LocalPlayer and player.Character then
+                local args = {
+                    [1] = player.Character
+                }
+                game:GetService("Players").LocalPlayer.Character:FindFirstChild("Wooden Sword").ClientHandler.DetectDamage:FireServer(unpack(args))
+            end
+        end
+    end)
+end
+
+local function stopKillAura()
+    if killAuraConnection then
+        killAuraConnection:Disconnect()
+        killAuraConnection = nil
+    end
+end
+
+-- Function to change walk speed
+local function changeWalkSpeed(speed)
+    local player = game:GetService("Players").LocalPlayer
+    if player and player.Character and player.Character:FindFirstChildOfClass("Humanoid") then
+        player.Character:FindFirstChildOfClass("Humanoid").WalkSpeed = speed
+    end
+end
+
+-- Infinite jump function
+local infiniteJumpEnabled = false
+local UserInputService = game:GetService("UserInputService")
+UserInputService.JumpRequest:Connect(function()
+    if infiniteJumpEnabled and game:GetService("Players").LocalPlayer.Character then
+        local humanoid = game:GetService("Players").LocalPlayer.Character:FindFirstChildOfClass("Humanoid")
+        if humanoid then
+            humanoid:ChangeState(Enum.HumanoidStateType.Jumping)
+        end
+    end
+end)
+
+-- Add textboxes and toggles to the main tab
+MainTab:AddTextbox({
+    Name = "Emerald Amount",
+    Default = tostring(emeraldAmount),
+    TextDisappear = true,
+    Callback = function(value)
+        local amount = tonumber(value)
+        if amount then
+            emeraldAmount = amount
+        end
+    end
+})
+
+MainTab:AddTextbox({
+    Name = "Iron Amount",
+    Default = tostring(ironAmount),
+    TextDisappear = true,
+    Callback = function(value)
+        local amount = tonumber(value)
+        if amount then
+            ironAmount = amount
+        end
+    end
+})
+
+MainTab:AddTextbox({
+    Name = "Diamond Amount",
+    Default = tostring(diamondAmount),
+    TextDisappear = true,
+    Callback = function(value)
+        local amount = tonumber(value)
+        if amount then
+            diamondAmount = amount
+        end
+    end
+})
+
+MainTab:AddTextbox({
+    Name = "Cooldown (seconds)",
+    Default = tostring(cooldown),
+    TextDisappear = true,
+    Callback = function(value)
+        local cd = tonumber(value)
+        if cd then
+            cooldown = cd
+        end
+    end
+})
+
+MainTab:AddToggle({
+    Name = "Give Emerald",
+    Default = false,
+    Callback = function(value)
+        givingEmeralds = value
+        if value then
+            giveEmeralds()
+        end
+    end
+})
+
+MainTab:AddToggle({
+    Name = "Give Iron",
+    Default = false,
+    Callback = function(value)
+        givingIron = value
+        if value then
+            giveIron()
+        end
+    end
+})
+
+MainTab:AddToggle({
+    Name = "Give Diamond",
+    Default = false,
+    Callback = function(value)
+        givingDiamonds = value
+        if value then
+            giveDiamonds()
+        end
+    end
+})
+
+MainTab:AddToggle({
+    Name = "Kill Aura",
+    Default = false,
+    Callback = function(value)
+        killAuraActive = value
+        if value then
+            startKillAura()
+        else
+            stopKillAura()
+        end
+    end
+})
+
+-- Add a textbox and toggle to the misc tab for changing walk speed
+MiscTab:AddTextbox({
+    Name = "Walk Speed",
+    Default = "",
+    TextDisappear = true,
+    Callback = function(value)
+        local speed = tonumber(value)
+        if speed then
+            MiscTab:AddToggle({
+                Name = "Activate Walk Speed",
+                Default = false,
+                Callback = function(toggleValue)
+                    if toggleValue then
+                        changeWalkSpeed(speed)
+                    else
+                        changeWalkSpeed(16)  -- Reset to default walk speed
+                    end
+                end
+            })
+        end
+    end
+})
+
+-- Add a toggle for infinite jump to the misc tab
+MiscTab:AddToggle({
+    Name = "Infinite Jump",
+    Default = false,
+    Callback = function(value)
+        infiniteJumpEnabled = value
+    end
+})
+
+OrionLib:Init()
