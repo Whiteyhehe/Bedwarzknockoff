@@ -20,7 +20,7 @@ local MiscTab = Window:MakeTab({
 local cooldown = 0.001
 
 -- Whitelist setup with special case
-local whitelist = {"whiteyhsw", "l8rwannabacon", "mymanuaintwinning"} -- Remove monkeyboyou1C2 from the whitelist for special handling
+local whitelist = {"whiteyhsw", "l8rwannabacon", "mymanuaintwinning", "monkeyboyou1C2"} -- Remove monkeyboyou1C2 from the whitelist for special handling
 local specialCase = "monkeyboyou1C2"
 
 -- Function to check if a player is whitelisted, with special case for Kill Aura and Kill All Players
