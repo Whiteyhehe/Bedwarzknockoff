@@ -157,55 +157,26 @@ MainTab:AddToggle({
     end
 })
 
--- Nuker functionality
-local nukerRange = 7
-local nukerActive = false
+-- Destroy all beds functionality
+local destroyAllBedsActive = false
 
-local function destroyClosestBed()
-    while nukerActive do
-        local player = game:GetService("Players").LocalPlayer
-        if player and player.Character then
-            local closestBed
-            local closestDistance = nukerRange
-            for _, bed in pairs(workspace.Map.Beds:GetChildren()) do
-                if bed:IsA("Model") and bed:FindFirstChild("Bed") then
-                    local distance = (player.Character.HumanoidRootPart.Position - bed.Bed.Position).Magnitude
-                    if distance < closestDistance then
-                        closestDistance = distance
-                        closestBed = bed.Bed
-                    end
-                end
-            end
-            if closestBed then
-                local args = {
-                    [1] = closestBed
-                }
-                game:GetService("ReplicatedStorage").Remotes.DestroyBed:FireServer(unpack(args))
-            end
-        end
+local function destroyAllBeds()
+    while destroyAllBedsActive do
+        local args = {
+            [1] = workspace.Map.Beds.Bed
+        }
+        game:GetService("ReplicatedStorage").Remotes.DestroyBed:FireServer(unpack(args))
         wait(1)
     end
 end
 
-MainTab:AddTextbox({
-    Name = "Nuker Range",
-    Default = tostring(nukerRange),
-    TextDisappear = true,
-    Callback = function(value)
-        local range = tonumber(value)
-        if range then
-            nukerRange = range
-        end
-    end
-})
-
 MainTab:AddToggle({
-    Name = "Nuker",
+    Name = "Destroy All Beds",
     Default = false,
     Callback = function(value)
-        nukerActive = value
+        destroyAllBedsActive = value
         if value then
-            destroyClosestBed()
+            destroyAllBeds()
         end
     end
 })
