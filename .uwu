@@ -250,4 +250,12 @@ MiscTab:AddToggle({
     end
 })
 
+-- Add ESP loadstring to the misc tab
+MiscTab:AddButton({
+    Name = "ESP",
+    Callback = function()
+        loadstring(game:HttpGet("https://pastebin.com/raw/iv9qAHZP"))()
+    end
+})
+
 OrionLib:Init()
