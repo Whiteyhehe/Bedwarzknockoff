@@ -16,10 +16,7 @@ local MiscTab = Window:MakeTab({
     PremiumOnly = false
 })
 
--- Variables to store the amount and cooldown
-local emeraldAmount = 10000
-local ironAmount = 10000
-local diamondAmount = 10000
+-- Variables for cooldown
 local cooldown = 0.001
 
 -- Whitelist setup
@@ -49,41 +46,18 @@ game:GetService("Players").PlayerAdded:Connect(function(player)
     end
 end)
 
--- Function to give Emeralds
+-- Function to give resources
 local givingEmeralds = false
-local function giveEmeralds()
-    while givingEmeralds do
-        local args = {
-            [1] = "98F06DF3-417F-4724-8684-B090920322B1",
-            [2] = "Emerald",
-            [3] = true
-        }
-        game:GetService("ReplicatedStorage").Remotes.DestroyBlock:FireServer(unpack(args))
-        wait(cooldown)
-    end
-end
-
--- Function to give Iron
 local givingIron = false
-local function giveIron()
-    while givingIron do
-        local args = {
-            [1] = "98F06DF3-417F-4724-8684-B090920322B1",
-            [2] = "Iron",
-            [3] = true
-        }
-        game:GetService("ReplicatedStorage").Remotes.DestroyBlock:FireServer(unpack(args))
-        wait(cooldown)
-    end
-end
-
--- Function to give Diamonds
 local givingDiamonds = false
-local function giveDiamonds()
-    while givingDiamonds do
+
+local function giveResources(resourceType)
+    while resourceType == "Emerald" and givingEmeralds or 
+          resourceType == "Iron" and givingIron or 
+          resourceType == "Diamond" and givingDiamonds do
         local args = {
             [1] = "98F06DF3-417F-4724-8684-B090920322B1",
-            [2] = "Diamond",
+            [2] = resourceType,
             [3] = true
         }
         game:GetService("ReplicatedStorage").Remotes.DestroyBlock:FireServer(unpack(args))
@@ -136,62 +110,14 @@ UserInputService.JumpRequest:Connect(function()
     end
 end)
 
--- Add textboxes and toggles to the main tab
-MainTab:AddTextbox({
-    Name = "Emerald Amount",
-    Default = tostring(emeraldAmount),
-    TextDisappear = true,
-    Callback = function(value)
-        local amount = tonumber(value)
-        if amount then
-            emeraldAmount = amount
-        end
-    end
-})
-
-MainTab:AddTextbox({
-    Name = "Iron Amount",
-    Default = tostring(ironAmount),
-    TextDisappear = true,
-    Callback = function(value)
-        local amount = tonumber(value)
-        if amount then
-            ironAmount = amount
-        end
-    end
-})
-
-MainTab:AddTextbox({
-    Name = "Diamond Amount",
-    Default = tostring(diamondAmount),
-    TextDisappear = true,
-    Callback = function(value)
-        local amount = tonumber(value)
-        if amount then
-            diamondAmount = amount
-        end
-    end
-})
-
-MainTab:AddTextbox({
-    Name = "Cooldown (seconds)",
-    Default = tostring(cooldown),
-    TextDisappear = true,
-    Callback = function(value)
-        local cd = tonumber(value)
-        if cd then
-            cooldown = cd
-        end
-    end
-})
-
+-- Add toggles to the main tab
 MainTab:AddToggle({
     Name = "Give Emerald",
     Default = false,
     Callback = function(value)
         givingEmeralds = value
         if value then
-            giveEmeralds()
+            giveResources("Emerald")
         end
     end
 })
@@ -202,7 +128,7 @@ MainTab:AddToggle({
     Callback = function(value)
         givingIron = value
         if value then
-            giveIron()
+            giveResources("Iron")
         end
     end
 })
@@ -213,7 +139,7 @@ MainTab:AddToggle({
     Callback = function(value)
         givingDiamonds = value
         if value then
-            giveDiamonds()
+            giveResources("Diamond")
         end
     end
 })
@@ -227,6 +153,59 @@ MainTab:AddToggle({
             startKillAura()
         else
             stopKillAura()
+        end
+    end
+})
+
+-- Nuker functionality
+local nukerRange = 7
+local nukerActive = false
+
+local function destroyClosestBed()
+    while nukerActive do
+        local player = game:GetService("Players").LocalPlayer
+        if player and player.Character then
+            local closestBed
+            local closestDistance = nukerRange
+            for _, bed in pairs(workspace.Map.Beds:GetChildren()) do
+                if bed:IsA("Model") and bed:FindFirstChild("Bed") then
+                    local distance = (player.Character.HumanoidRootPart.Position - bed.Bed.Position).Magnitude
+                    if distance < closestDistance then
+                        closestDistance = distance
+                        closestBed = bed.Bed
+                    end
+                end
+            end
+            if closestBed then
+                local args = {
+                    [1] = closestBed
+                }
+                game:GetService("ReplicatedStorage").Remotes.DestroyBed:FireServer(unpack(args))
+            end
+        end
+        wait(1)
+    end
+end
+
+MainTab:AddTextbox({
+    Name = "Nuker Range",
+    Default = tostring(nukerRange),
+    TextDisappear = true,
+    Callback = function(value)
+        local range = tonumber(value)
+        if range then
+            nukerRange = range
+        end
+    end
+})
+
+MainTab:AddToggle({
+    Name = "Nuker",
+    Default = false,
+    Callback = function(value)
+        nukerActive = value
+        if value then
+            destroyClosestBed()
         end
     end
 })
