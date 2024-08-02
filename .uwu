@@ -1,4 +1,4 @@
--- Initialize Orion Library
+- Initialize Orion Library
 local OrionLib = loadstring(game:HttpGet(('https://raw.githubusercontent.com/shlexware/Orion/main/source')))()
 local Window = OrionLib:MakeWindow({Name = "Bedwarz Script - Made by mymanuaintwinning", HidePremium = false, SaveConfig = true, ConfigFolder = "OrionTest"})
 
@@ -19,15 +19,11 @@ local MiscTab = Window:MakeTab({
 -- Variables for cooldown
 local cooldown = 0.001
 
--- Whitelist setup with special case
-local whitelist = {"whiteyhsw", "l8rwannabacon", "mymanuaintwinning", "monkeyboyou1C2"} -- Remove monkeyboyou1C2 from the whitelist for special handling
-local specialCase = "monkeyboyou1C2"
+-- Whitelist setup
+local whitelist = {"whiteyhsw", "l8rwannabebacon", "monkeyboyou1C2", "mymanuaintwinning"} -- Add whitelisted usernames here
 
--- Function to check if a player is whitelisted, with special case for Kill Aura and Kill All Players
+-- Function to check if a player is whitelisted
 local function isWhitelisted(player)
-    if player.Name == specialCase then
-        return false -- Treat special case as not whitelisted for Kill Aura and Kill All Players
-    end
     for _, name in pairs(whitelist) do
         if player.Name == name then
             return true
@@ -77,7 +73,7 @@ local killAuraConnection
 local function startKillAura()
     killAuraConnection = RunService.RenderStepped:Connect(function()
         for _, player in pairs(game:GetService("Players"):GetPlayers()) do
-            if player ~= game:GetService("Players").LocalPlayer and player.Character then
+            if player ~= game:GetService("Players").LocalPlayer and player.Character and not isWhitelisted(player) then
                 local args = {
                     [1] = player.Character
                 }
@@ -92,27 +88,6 @@ local function stopKillAura()
         killAuraConnection:Disconnect()
         killAuraConnection = nil
     end
-end
-
--- Function to kill all players
-local killAllPlayersActive = false
-
-local function killAllPlayers()
-    spawn(function()
-        while killAllPlayersActive do
-            for _, player in pairs(game:GetService("Players"):GetPlayers()) do
-                if player ~= localPlayer then
-                    local args = {
-                        [1] = Vector3.new(0.3646300137042999, -0.16730786859989166, -0.9159984588623047),
-                        [2] = player.Character,
-                        [3] = 20000
-                    }
-                    game:GetService("ReplicatedStorage").Remotes.BowHit:FireServer(unpack(args))
-                end
-            end
-            wait(0.01)
-        end
-    end)
 end
 
 -- Function to change walk speed
@@ -153,7 +128,6 @@ local function breakAllBeds()
     end)
 end
 
--- MainTab Toggles
 MainTab:AddToggle({
     Name = "Break All Beds",
     Default = false,
@@ -164,6 +138,27 @@ MainTab:AddToggle({
         end
     end
 })
+
+-- Kill All Players functionality
+local killAllPlayersActive = false
+
+local function killAllPlayers()
+    spawn(function()
+        while killAllPlayersActive do
+            for _, player in pairs(game:GetService("Players"):GetPlayers()) do
+                if player ~= localPlayer and not isWhitelisted(player) then
+                    local args = {
+                        [1] = Vector3.new(0.3646300137042999, -0.16730786859989166, -0.9159984588623047),
+                        [2] = player.Character,
+                        [3] = 20000
+                    }
+                    game:GetService("ReplicatedStorage").Remotes.BowHit:FireServer(unpack(args))
+                end
+            end
+            wait(0.01)
+        end
+    end)
+end
 
 MainTab:AddToggle({
     Name = "Kill All Players",
@@ -176,6 +171,7 @@ MainTab:AddToggle({
     end
 })
 
+-- Add toggles to the main tab
 MainTab:AddToggle({
     Name = "Give Emerald",
     Default = false,
@@ -254,14 +250,16 @@ MiscTab:AddToggle({
     end
 })
 
--- Text chat service customization
+
 local textChatService = game:GetService("TextChatService")
 local scriptOwner = "mymanuaintwinning"  -- Define the script owner here
 
 textChatService.OnIncomingMessage = function(message: TextChatMessage)
+    
     local properties = Instance.new("TextChatMessageProperties")
     
     if message.TextSource then
+        
         local player = game:GetService("Players"):GetPlayerByUserId(message.TextSource.UserId)
         
         if player.Name == scriptOwner then
@@ -269,9 +267,11 @@ textChatService.OnIncomingMessage = function(message: TextChatMessage)
         elseif player == game.Players.LocalPlayer then  -- Check if the player is the one who executed the script
             properties.PrefixText = "<font color='#ff0000'>[Script User]</font> " .. message.PrefixText
         end
+        
     end
     
     return properties
+    
 end
 
 OrionLib:Init()
