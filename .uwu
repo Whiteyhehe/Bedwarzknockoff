@@ -110,6 +110,33 @@ UserInputService.JumpRequest:Connect(function()
     end
 end)
 
+-- Break All Beds functionality
+local breakAllBedsActive = false
+
+local function breakAllBeds()
+    while breakAllBedsActive do
+        for _, bed in pairs(workspace.Map.Beds:GetChildren()) do
+            local args = {
+                [1] = bed
+            }
+            game:GetService("ReplicatedStorage").Remotes.DestroyBed:FireServer(unpack(args))
+            wait(0.1) -- Slight delay to avoid overwhelming the server
+        end
+        wait(1)
+    end
+end
+
+MainTab:AddToggle({
+    Name = "Break All Beds",
+    Default = false,
+    Callback = function(value)
+        breakAllBedsActive = value
+        if value then
+            breakAllBeds()
+        end
+    end
+})
+
 -- Kill All Players functionality
 local killAllPlayersActive = false
 
