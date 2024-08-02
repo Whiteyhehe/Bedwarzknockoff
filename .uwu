@@ -266,7 +266,7 @@ local UniversalTab = Window:MakeTab({
 })
 
 -- Add Universal Scripts label
-MiscTab:AddLabel("Universal Scripts")
+UniversalTab:AddLabel("Universal Scripts")
 
 -- Add Inf Yield script button
 UniversalTab:AddButton({
