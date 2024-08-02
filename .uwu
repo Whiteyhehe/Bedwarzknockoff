@@ -53,15 +53,13 @@ end)
 local givingEmeralds = false
 local function giveEmeralds()
     while givingEmeralds do
-        for i = 1, emeraldAmount do
-            local args = {
-                [1] = "98F06DF3-417F-4724-8684-B090920322B1",
-                [2] = "Emerald",
-                [3] = true
-            }
-            game:GetService("ReplicatedStorage").Remotes.DestroyBlock:FireServer(unpack(args))
-            wait(cooldown)
-        end
+        local args = {
+            [1] = "98F06DF3-417F-4724-8684-B090920322B1",
+            [2] = "Emerald",
+            [3] = true
+        }
+        game:GetService("ReplicatedStorage").Remotes.DestroyBlock:FireServer(unpack(args))
+        wait(cooldown)
     end
 end
 
@@ -69,15 +67,13 @@ end
 local givingIron = false
 local function giveIron()
     while givingIron do
-        for i = 1, ironAmount do
-            local args = {
-                [1] = "98F06DF3-417F-4724-8684-B090920322B1",
-                [2] = "Iron",
-                [3] = true
-            }
-            game:GetService("ReplicatedStorage").Remotes.DestroyBlock:FireServer(unpack(args))
-            wait(cooldown)
-        end
+        local args = {
+            [1] = "98F06DF3-417F-4724-8684-B090920322B1",
+            [2] = "Iron",
+            [3] = true
+        }
+        game:GetService("ReplicatedStorage").Remotes.DestroyBlock:FireServer(unpack(args))
+        wait(cooldown)
     end
 end
 
@@ -85,15 +81,13 @@ end
 local givingDiamonds = false
 local function giveDiamonds()
     while givingDiamonds do
-        for i = 1, diamondAmount do
-            local args = {
-                [1] = "98F06DF3-417F-4724-8684-B090920322B1",
-                [2] = "Diamond",
-                [3] = true
-            }
-            game:GetService("ReplicatedStorage").Remotes.DestroyBlock:FireServer(unpack(args))
-            wait(cooldown)
-        end
+        local args = {
+            [1] = "98F06DF3-417F-4724-8684-B090920322B1",
+            [2] = "Diamond",
+            [3] = true
+        }
+        game:GetService("ReplicatedStorage").Remotes.DestroyBlock:FireServer(unpack(args))
+        wait(cooldown)
     end
 end
 
