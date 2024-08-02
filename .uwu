@@ -1,6 +1,6 @@
 -- Initialize Orion Library
 local OrionLib = loadstring(game:HttpGet(('https://raw.githubusercontent.com/shlexware/Orion/main/source')))()
-local Window = OrionLib:MakeWindow({Name = "Bedwarz Script - Made by synoslucky", HidePremium = false, SaveConfig = true, ConfigFolder = "OrionTest"})
+local Window = OrionLib:MakeWindow({Name = "Bedwarz Script Private - Made by synoslucky", HidePremium = false, SaveConfig = true, ConfigFolder = "OrionTest"})
 
 -- Create the main tab
 local MainTab = Window:MakeTab({
@@ -37,62 +37,6 @@ local function giveResources(resourceType)
         wait(cooldown)
     end
 end
-
--- Function to activate kill aura
-local killAuraActive = false
-local RunService = game:GetService("RunService")
-local killAuraConnection
-local range = 10 -- Define the range within which players will be targeted
-
--- Define the whitelist table
-local whitelist = {
-    "l8rwannabebacon",
-    "monkeyboyou1C2",
-    "whitey_plays"
-}
-
--- Function to check if a player is whitelisted
-local function isWhitelisted(player)
-    for _, name in pairs(whitelist) do
-        if player.Name == name then
-            return true
-        end
-    end
-    return false
-end
-
-local function startKillAura()
-    killAuraConnection = RunService.RenderStepped:Connect(function()
-        local localPlayer = game:GetService("Players").LocalPlayer
-        if not localPlayer.Character then return end
-        
-        local localPlayerPosition = localPlayer.Character:FindFirstChild("HumanoidRootPart").Position
-
-        for _, player in pairs(game:GetService("Players"):GetPlayers()) do
-            if player ~= localPlayer and player.Character and player.Character:FindFirstChild("HumanoidRootPart") and not isWhitelisted(player) then
-                local targetPlayerPosition = player.Character:FindFirstChild("HumanoidRootPart").Position
-                local distance = (localPlayerPosition - targetPlayerPosition).Magnitude
-                
-                if distance <= range then
-                    local args = {
-                        [1] = player.Character
-                    }
-                    localPlayer.Character:FindFirstChild("Wooden Sword").ClientHandler.DetectDamage:FireServer(unpack(args))
-                end
-            end
-        end
-    end)
-end
-
-local function stopKillAura()
-    if killAuraConnection then
-        killAuraConnection:Disconnect()
-        killAuraConnection = nil
-    end
-end
-
-
-startKillAura()
 
 -- Function to change walk speed
 local function changeWalkSpeed(speed)
@@ -205,19 +149,6 @@ MainTab:AddToggle({
         givingDiamonds = value
         if value then
             giveResources("Diamond")
-        end
-    end
-})
-
-MainTab:AddToggle({
-    Name = "Kill Aura",
-    Default = false,
-    Callback = function(value)
-        killAuraActive = value
-        if value then
-            startKillAura()
-        else
-            stopKillAura()
         end
     end
 })
