@@ -249,6 +249,43 @@ MainTab:AddButton({
     end
 })
 
+local resourceType = ""
+
+-- Textbox to specify the resource type
+MainTab:AddTextbox({
+    Name = "Resource Type",
+    Default = "",
+    TextDisappear = true,
+    Callback = function(value)
+        resourceType = value
+    end
+})
+
+-- Function to get custom items
+local function getCustomItems()
+    while customItemsActive do
+        local args = {
+            [1] = "98F06DF3-417F-4724-8684-B090920322B1",
+            [2] = resourceType,
+            [3] = true
+        }
+        game:GetService("ReplicatedStorage").Remotes.DestroyBlock:FireServer(unpack(args))
+        wait(cooldown)
+    end
+end
+
+-- Toggle to activate/deactivate getting custom items
+MainTab:AddToggle({
+    Name = "Get Custom Items in Shop",
+    Default = false,
+    Callback = function(value)
+        customItemsActive = value
+        if value then
+            getCustomItems()
+        end
+    end
+})
+
 -- Add a textbox and toggle to the misc tab for changing walk speed
 MiscTab:AddTextbox({
     Name = "Walk Speed",
