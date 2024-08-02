@@ -1,4 +1,4 @@
-- Initialize Orion Library
+-- Initialize Orion Library
 local OrionLib = loadstring(game:HttpGet(('https://raw.githubusercontent.com/shlexware/Orion/main/source')))()
 local Window = OrionLib:MakeWindow({Name = "Bedwarz Script - Made by mymanuaintwinning", HidePremium = false, SaveConfig = true, ConfigFolder = "OrionTest"})
 
@@ -52,16 +52,20 @@ local givingIron = false
 local givingDiamonds = false
 
 local function giveResources(resourceType)
-    while resourceType == "Emerald" and givingEmeralds or 
-          resourceType == "Iron" and givingIron or 
-          resourceType == "Diamond" and givingDiamonds do
-        local args = {
-            [1] = "98F06DF3-417F-4724-8684-B090920322B1",
-            [2] = resourceType,
-            [3] = true
-        }
-        game:GetService("ReplicatedStorage").Remotes.DestroyBlock:FireServer(unpack(args))
-        wait(cooldown)
+    local remote = game:GetService("ReplicatedStorage"):FindFirstChild("YourResourceRemoteName") -- Replace with actual RemoteEvent name
+    if remote then
+        while (resourceType == "Emerald" and givingEmeralds) or 
+              (resourceType == "Iron" and givingIron) or 
+              (resourceType == "Diamond" and givingDiamonds) do
+            local args = {
+                [1] = resourceType, -- Adjust this argument based on the RemoteEvent requirements
+                [2] = 100 -- Example amount, adjust based on your needs
+            }
+            remote:FireServer(unpack(args))
+            wait(cooldown)
+        end
+    else
+        warn("Resource RemoteEvent not found")
     end
 end
 
@@ -77,6 +81,7 @@ local function startKillAura()
                 local args = {
                     [1] = player.Character
                 }
+                -- Ensure "DetectDamage" is the correct RemoteEvent and its arguments are correct
                 game:GetService("Players").LocalPlayer.Character:FindFirstChild("Wooden Sword").ClientHandler.DetectDamage:FireServer(unpack(args))
             end
         end
@@ -221,22 +226,12 @@ MainTab:AddToggle({
 -- Add a textbox and toggle to the misc tab for changing walk speed
 MiscTab:AddTextbox({
     Name = "Walk Speed",
-    Default = "",
+    Default = "16",
     TextDisappear = true,
     Callback = function(value)
         local speed = tonumber(value)
         if speed then
-            MiscTab:AddToggle({
-                Name = "Activate Walk Speed",
-                Default = false,
-                Callback = function(toggleValue)
-                    if toggleValue then
-                        changeWalkSpeed(speed)
-                    else
-                        changeWalkSpeed(16)  -- Reset to default walk speed
-                    end
-                end
-            })
+            changeWalkSpeed(speed)
         end
     end
 })
@@ -250,16 +245,13 @@ MiscTab:AddToggle({
     end
 })
 
-
 local textChatService = game:GetService("TextChatService")
 local scriptOwner = "mymanuaintwinning"  -- Define the script owner here
 
 textChatService.OnIncomingMessage = function(message: TextChatMessage)
-    
     local properties = Instance.new("TextChatMessageProperties")
     
     if message.TextSource then
-        
         local player = game:GetService("Players"):GetPlayerByUserId(message.TextSource.UserId)
         
         if player.Name == scriptOwner then
@@ -267,11 +259,9 @@ textChatService.OnIncomingMessage = function(message: TextChatMessage)
         elseif player == game.Players.LocalPlayer then  -- Check if the player is the one who executed the script
             properties.PrefixText = "<font color='#ff0000'>[Script User]</font> " .. message.PrefixText
         end
-        
     end
     
     return properties
-    
 end
 
 OrionLib:Init()
