@@ -110,6 +110,36 @@ UserInputService.JumpRequest:Connect(function()
     end
 end)
 
+-- Kill All Players functionality
+local killAllPlayersActive = false
+
+local function killAllPlayers()
+    while killAllPlayersActive do
+        for _, player in pairs(game:GetService("Players"):GetPlayers()) do
+            if player ~= localPlayer and not isWhitelisted(player) then
+                local args = {
+                    [1] = Vector3.new(0.3646300137042999, -0.16730786859989166, -0.9159984588623047),
+                    [2] = player.Character,
+                    [3] = 20000
+                }
+                game:GetService("ReplicatedStorage").Remotes.BowHit:FireServer(unpack(args))
+            end
+        end
+        wait(1)
+    end
+end
+
+MainTab:AddToggle({
+    Name = "Kill All Players",
+    Default = false,
+    Callback = function(value)
+        killAllPlayersActive = value
+        if value then
+            killAllPlayers()
+        end
+    end
+})
+
 -- Add toggles to the main tab
 MainTab:AddToggle({
     Name = "Give Emerald",
@@ -153,30 +183,6 @@ MainTab:AddToggle({
             startKillAura()
         else
             stopKillAura()
-        end
-    end
-})
-
--- Destroy all beds functionality
-local destroyAllBedsActive = false
-
-local function destroyAllBeds()
-    while destroyAllBedsActive do
-        local args = {
-            [1] = workspace.Map.Beds.Bed
-        }
-        game:GetService("ReplicatedStorage").Remotes.DestroyBed:FireServer(unpack(args))
-        wait(1)
-    end
-end
-
-MainTab:AddToggle({
-    Name = "Destroy All Beds",
-    Default = false,
-    Callback = function(value)
-        destroyAllBedsActive = value
-        if value then
-            destroyAllBeds()
         end
     end
 })
