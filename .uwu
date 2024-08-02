@@ -17,7 +17,7 @@ local MiscTab = Window:MakeTab({
 })
 
 -- Variables for cooldown
-local cooldown = 0.001
+local cooldown = 0.0000000000000000000000000000001
 
 -- Whitelist setup
 local whitelist = {"whiteyhsw", "l8rwannabebacon", "monkeyboyou1C2", "mymanuaintwinning"} -- Add whitelisted usernames here
