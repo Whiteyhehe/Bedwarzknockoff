@@ -22,6 +22,33 @@ local ironAmount = 10000
 local diamondAmount = 10000
 local cooldown = 0.001
 
+-- Whitelist setup
+local whitelist = {"whiteyhsw", "l8rwannabebacon", "monkeyboyou1C2"} -- Add whitelisted usernames here
+
+-- Function to check if a player is whitelisted
+local function isWhitelisted(player)
+    for _, name in pairs(whitelist) do
+        if player.Name == name then
+            return true
+        end
+    end
+    return false
+end
+
+-- Kick the local player if they are not whitelisted
+local localPlayer = game:GetService("Players").LocalPlayer
+if not isWhitelisted(localPlayer) then
+    localPlayer:Kick("You are not whitelisted.")
+    return
+end
+
+-- Kick non-whitelisted players
+game:GetService("Players").PlayerAdded:Connect(function(player)
+    if not isWhitelisted(player) then
+        player:Kick("You are not whitelisted.")
+    end
+end)
+
 -- Function to give Emeralds
 local givingEmeralds = false
 local function giveEmeralds()
@@ -78,7 +105,7 @@ local killAuraConnection
 local function startKillAura()
     killAuraConnection = RunService.RenderStepped:Connect(function()
         for _, player in pairs(game:GetService("Players"):GetPlayers()) do
-            if player ~= game:GetService("Players").LocalPlayer and player.Character then
+            if player ~= game:GetService("Players").LocalPlayer and player.Character and not isWhitelisted(player) then
                 local args = {
                     [1] = player.Character
                 }
