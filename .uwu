@@ -19,33 +19,6 @@ local MiscTab = Window:MakeTab({
 -- Variables for cooldown
 local cooldown = 0.0000000000000000000000000000001
 
--- Whitelist setup
-local whitelist = {"whiteyhsw", "l8rwannabebacon", "monkeyboyou1C2", "whitey_plays"} -- Add whitelisted usernames here
-
--- Function to check if a player is whitelisted
-local function isWhitelisted(player)
-    for _, name in pairs(whitelist) do
-        if player.Name == name then
-            return true
-        end
-    end
-    return false
-end
-
--- Kick the local player if they are not whitelisted
-local localPlayer = game:GetService("Players").LocalPlayer
-if not isWhitelisted(localPlayer) then
-    localPlayer:Kick("You are not whitelisted.")
-    return
-end
-
--- Kick non-whitelisted players
-game:GetService("Players").PlayerAdded:Connect(function(player)
-    if not isWhitelisted(player) then
-        player:Kick("You are not whitelisted.")
-    end
-end)
-
 -- Function to give resources
 local givingEmeralds = false
 local givingIron = false
@@ -75,7 +48,7 @@ local range = 10 -- Define the range within which players will be targeted
 local whitelist = {
     "l8rwannabebacon",
     "monkeyboyou1C2",
-    "mymanuaintwinning"
+    "whitey_plays"
 }
 
 -- Function to check if a player is whitelisted
