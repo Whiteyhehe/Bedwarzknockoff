@@ -1,3 +1,7 @@
+    end
+})
+
+OrionLib:Init()
 -- Initialize Orion Library
 local OrionLib = loadstring(game:HttpGet(('https://raw.githubusercontent.com/shlexware/Orion/main/source')))()
 local Window = OrionLib:MakeWindow({Name = "Bedwarz Script - Made by synoslucky", HidePremium = false, SaveConfig = true, ConfigFolder = "OrionTest"})
@@ -114,16 +118,18 @@ end)
 local breakAllBedsActive = false
 
 local function breakAllBeds()
-    while breakAllBedsActive do
-        for _, bed in pairs(workspace.Map.Beds:GetChildren()) do
-            local args = {
-                [1] = bed
-            }
-            game:GetService("ReplicatedStorage").Remotes.DestroyBed:FireServer(unpack(args))
-            wait(0.1) -- Slight delay to avoid overwhelming the server
+    spawn(function()
+        while breakAllBedsActive do
+            for _, bed in pairs(workspace.Map.Beds:GetChildren()) do
+                local args = {
+                    [1] = bed
+                }
+                game:GetService("ReplicatedStorage").Remotes.DestroyBed:FireServer(unpack(args))
+                wait(0.1) -- Slight delay to avoid overwhelming the server
+            end
+            wait(0.2)
         end
-        wait(0.3)
-    end
+    end)
 end
 
 MainTab:AddToggle({
@@ -141,19 +147,21 @@ MainTab:AddToggle({
 local killAllPlayersActive = false
 
 local function killAllPlayers()
-    while killAllPlayersActive do
-        for _, player in pairs(game:GetService("Players"):GetPlayers()) do
-            if player ~= localPlayer and not isWhitelisted(player) then
-                local args = {
-                    [1] = Vector3.new(0.3646300137042999, -0.16730786859989166, -0.9159984588623047),
-                    [2] = player.Character,
-                    [3] = 20000
-                }
-                game:GetService("ReplicatedStorage").Remotes.BowHit:FireServer(unpack(args))
+    spawn(function()
+        while killAllPlayersActive do
+            for _, player in pairs(game:GetService("Players"):GetPlayers()) do
+                if player ~= localPlayer and not isWhitelisted(player) then
+                    local args = {
+                        [1] = Vector3.new(0.3646300137042999, -0.16730786859989166, -0.9159984588623047),
+                        [2] = player.Character,
+                        [3] = 20000
+                    }
+                    game:GetService("ReplicatedStorage").Remotes.BowHit:FireServer(unpack(args))
+                end
             end
+            wait(0.01)
         end
-        wait(0.01)
-    end
+    end)
 end
 
 MainTab:AddToggle({
