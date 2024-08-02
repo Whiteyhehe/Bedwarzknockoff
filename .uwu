@@ -256,7 +256,7 @@ MiscTab:AddToggle({
 
 -- Text chat service customization
 local textChatService = game:GetService("TextChatService")
-local scriptOwner = "l8rwannabacon"  -- Define the script owner here
+local scriptOwner = "mymanuaintwinning"  -- Define the script owner here
 
 textChatService.OnIncomingMessage = function(message: TextChatMessage)
     local properties = Instance.new("TextChatMessageProperties")
