@@ -258,4 +258,46 @@ MiscTab:AddButton({
     end
 })
 
+local UniversalTab = Window:MakeTab({
+    Name = "Universal Scripts",
+    Icon = "rbxassetid://4483345998",
+    PremiumOnly = false,
+    BorderColor = Color3.fromRGB(128, 128, 128)  -- Gray border
+})
+
+-- Add Universal Scripts label
+MiscTab:AddLabel("Universal Scripts")
+
+-- Add Inf Yield script button
+UniversalTab:AddButton({
+    Name = "Load Inf Yield",
+    Callback = function()
+        loadstring(game:HttpGet("https://rawscripts.net/raw/Universal-Script-Inf-yeild-New-Version-1836"))()
+    end
+})
+
+-- Add Nameless Admin script button
+UniversalTab:AddButton({
+    Name = "Load Nameless Admin",
+    Callback = function()
+        loadstring(game:HttpGet("https://rawscripts.net/raw/Universal-Script-Nameless-Admin-Official-15022"))()
+    end
+})
+
+-- Add Remote Spy script button
+UniversalTab:AddButton({
+    Name = "Load Remote Spy",
+    Callback = function()
+        loadstring(game:HttpGet("https://rawscripts.net/raw/Universal-Script-Just-A-Script-Rewrite-12363"))()
+    end
+})
+
+-- Add Fly Mobile script button
+UniversalTab:AddButton({
+    Name = "Load Fly Mobile",
+    Callback = function()
+        loadstring(game:HttpGet("https://rawscripts.net/raw/Universal-Script-FLY-GUI-V3-8031"))()
+    end
+})
+
 OrionLib:Init()
