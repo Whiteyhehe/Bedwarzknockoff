@@ -22,7 +22,8 @@ local cooldown = 0.1
 -- Whitelisted usernames
 local whitelist = {
     ["whitey_plays"] = true,
-    ["supercoolguydjf"] = true
+    ["supercoolguydjf"] = true,
+    ["monkeyboyou1C2"] = true
 }
 
 -- Function to check if a player is whitelisted
