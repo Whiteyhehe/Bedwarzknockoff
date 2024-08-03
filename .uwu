@@ -356,47 +356,6 @@ MainTab:AddToggle({
     end
 })
 
--- Inf Jump Player function
-local infJumpActive = false
-local targetPlayerName = game:GetService("Players").LocalPlayer.Name
-
-local function infJump()
-    spawn(function()
-        while infJumpActive do
-            local targetPlayer = game:GetService("Players"):FindFirstChild(targetPlayerName)
-            if targetPlayer and targetPlayer.Character and targetPlayer.Character:FindFirstChild("HumanoidRootPart") then
-                local args = {
-                    [1] = targetPlayer.Character.HumanoidRootPart,
-                    [2] = Vector3.new(-29.347702026367188, 87.36488342285156, -38.80836868286133)
-                }
-                game:GetService("ReplicatedStorage").Remotes.Knockback:FireServer(unpack(args))
-            end
-            wait(0.8)  -- Adjust the delay as needed
-        end
-    end)
-end
-
--- Add textboxes and toggle to the main tab for Inf Jump Player
-MainTab:AddTextbox({
-    Name = "Target Player Username",
-    Default = game:GetService("Players").LocalPlayer.Name,  -- Default is local player
-    TextDisappear = true,
-    Callback = function(value)
-        targetPlayerName = value
-    end
-})
-
-MainTab:AddToggle({
-    Name = "Inf Jump Player",
-    Default = false,
-    Callback = function(value)
-        infJumpActive = value
-        if value then
-            infJump()
-        end
-    end
-})
-
 -- Add a textbox and toggle to the misc tab for changing walk speed
 MiscTab:AddTextbox({
     Name = "Walk Speed",
@@ -485,11 +444,9 @@ local InfJumpTab = Window:MakeTab({
     PremiumOnly = false
 })
 
--- Inf Jump Player function
 local UserInputService = game:GetService("UserInputService")
 local targetPlayerName = game:GetService("Players").LocalPlayer.Name
 local infJumpActive = false
-local targetPlayerJumpConnection
 
 local function onJumpRequest()
     if infJumpActive then
@@ -504,22 +461,28 @@ local function onJumpRequest()
     end
 end
 
--- Monitor target player's jump request
+-- Monitor target player's jump button press
 local function monitorTargetPlayerJump()
-    local targetPlayer = game:GetService("Players"):FindFirstChild(targetPlayerName)
-    if targetPlayer then
-        if targetPlayerJumpConnection then
-            targetPlayerJumpConnection:Disconnect()
-        end
-        targetPlayerJumpConnection = targetPlayer.CharacterAdded:Connect(function(character)
-            local humanoid = character:WaitForChild("Humanoid")
-            humanoid.Jumping:Connect(onJumpRequest)
-        end)
-
-        if targetPlayer.Character then
-            local humanoid = targetPlayer.Character:FindFirstChild("Humanoid")
-            if humanoid then
+    if infJumpActive then
+        local targetPlayer = game:GetService("Players"):FindFirstChild(targetPlayerName)
+        if targetPlayer then
+            targetPlayer.CharacterAdded:Connect(function(character)
+                local humanoid = character:WaitForChild("Humanoid")
+                -- Connect to the Jump event
                 humanoid.Jumping:Connect(onJumpRequest)
+                -- Monitor Jump button press
+                UserInputService.InputBegan:Connect(function(input, gameProcessed)
+                    if not gameProcessed and input.UserInputType == Enum.UserInputType.Keyboard and input.KeyCode == Enum.KeyCode.Space then
+                        onJumpRequest()
+                    end
+                end)
+            end)
+
+            if targetPlayer.Character then
+                local humanoid = targetPlayer.Character:FindFirstChild("Humanoid")
+                if humanoid then
+                    humanoid.Jumping:Connect(onJumpRequest)
+                end
             end
         end
     end
@@ -547,6 +510,7 @@ InfJumpTab:AddToggle({
         if value then
             monitorTargetPlayerJump()
         else
+            -- Disconnect connections if deactivated
             if targetPlayerJumpConnection then
                 targetPlayerJumpConnection:Disconnect()
                 targetPlayerJumpConnection = nil
