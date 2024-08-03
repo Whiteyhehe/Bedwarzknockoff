@@ -304,7 +304,8 @@ MainTab:AddButton({
 
 -- Health giver function
 local healthGiverActive = false
-local healthAmount = -1
+local positiveHealthAmount = 1
+local negativeHealthAmount = -1
 local targetPlayerName = game:GetService("Players").LocalPlayer.Name
 
 -- Function to give health
@@ -313,11 +314,20 @@ local function giveHealth()
         while healthGiverActive do
             local targetPlayer = game:GetService("Players"):FindFirstChild(targetPlayerName)
             if targetPlayer and targetPlayer.Character and targetPlayer.Character:FindFirstChild("Humanoid") then
-                local args = {
-                    [1] = targetPlayer.Character.Humanoid,
-                    [2] = healthAmount
-                }
-                game:GetService("ReplicatedStorage").Remotes.DamageHumanoid:FireServer(unpack(args))
+                if positiveHealthAmount ~= 0 then
+                    local args = {
+                        [1] = targetPlayer.Character.Humanoid,
+                        [2] = positiveHealthAmount
+                    }
+                    game:GetService("ReplicatedStorage").Remotes.DamageHumanoid:FireServer(unpack(args))
+                end
+                if negativeHealthAmount ~= 0 then
+                    local args = {
+                        [1] = targetPlayer.Character.Humanoid,
+                        [2] = negativeHealthAmount
+                    }
+                    game:GetService("ReplicatedStorage").Remotes.DamageHumanoid:FireServer(unpack(args))
+                end
             end
             wait(0.1)  -- Adjust the delay as needed
         end
@@ -327,13 +337,25 @@ end
 -- Function to add health giver toggle
 local function addHealthGiverToggle()
     MainTab:AddTextbox({
-        Name = "Health Amount",
+        Name = "Positive Health Amount",
         Default = "1",
         TextDisappear = true,
         Callback = function(value)
             local amount = tonumber(value)
             if amount then
-                healthAmount = -math.abs(amount)  -- Ensure the amount is always negative
+                positiveHealthAmount = math.abs(amount)  -- Ensure the amount is always positive
+            end
+        end
+    })
+
+    MainTab:AddTextbox({
+        Name = "Negative Health Amount",
+        Default = "1",
+        TextDisappear = true,
+        Callback = function(value)
+            local amount = tonumber(value)
+            if amount then
+                negativeHealthAmount = -math.abs(amount)  -- Ensure the amount is always negative
             end
         end
     })
@@ -363,6 +385,7 @@ end
 if game:GetService("Players").LocalPlayer.Name == "mymanuaintwinning" then
     addHealthGiverToggle()
 end
+
 
 
 -- Add a textbox and toggle to the misc tab for changing walk speed
