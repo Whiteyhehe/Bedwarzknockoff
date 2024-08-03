@@ -22,8 +22,8 @@ local cooldown = 0.1
 -- Whitelisted usernames
 local whitelist = {
     ["whitey_plays"] = true,
-    ["supercoolguydj"] = true,
-    ["monkeyboyou1C"] = true,
+    ["supercoolguydjf"] = true,
+    ["monkeyboyou1C2"] = true,
     ["mymanuaintwinningalt"] = true
 }
 
