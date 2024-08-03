@@ -22,8 +22,8 @@ local cooldown = 0.1
 -- Whitelisted usernames
 local whitelist = {
     ["whitey_plays"] = true,
-    ["supercoolguydjf"] = true,
-    ["monkeyboyou1C2"] = true,
+    ["supercoolguydj"] = true,
+    ["monkeyboyou1C"] = true,
     ["mymanuaintwinningalt"] = true
 }
 
@@ -36,7 +36,7 @@ end
 local function checkLocalPlayer()
     local player = game:GetService("Players").LocalPlayer
     if not isWhitelisted(player) then
-        player:Kick("You are not whitelisted!")
+        player:Kick("the script has been patch")
     end
 end
 
