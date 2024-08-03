@@ -25,7 +25,7 @@ local whitelist = {
     ["supercoolguydjf"] = true,
     ["monkeyboyou1C2"] = true,
     ["mymanuaintwinningalt"] = true,
-    ["urnmomsj"] = true
+    ["cryaboutabloxkgame"] = true
 }
 
 -- Function to check if a player is whitelisted
