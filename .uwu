@@ -318,25 +318,77 @@ local function findPlayerByPartialName(partialName)
     return nil
 end
 
+-- Function to get a random player
+local function getRandomPlayer()
+    local players = game:GetService("Players"):GetPlayers()
+    if #players > 1 then  -- Ensure there is more than one player (excluding LocalPlayer)
+        local randomIndex = math.random(1, #players)
+        while players[randomIndex] == game:GetService("Players").LocalPlayer do
+            randomIndex = math.random(1, #players)
+        end
+        return players[randomIndex]
+    end
+    return nil
+end
+
 -- Function to give health
 local function giveHealth()
     spawn(function()
         while healthGiverActive do
-            local targetPlayer = findPlayerByPartialName(targetPlayerName)
-            if targetPlayer and targetPlayer.Character and targetPlayer.Character:FindFirstChild("Humanoid") then
-                if positiveHealthAmount ~= 0 then
-                    local args = {
-                        [1] = targetPlayer.Character.Humanoid,
-                        [2] = positiveHealthAmount
-                    }
-                    game:GetService("ReplicatedStorage").Remotes.DamageHumanoid:FireServer(unpack(args))
+            if targetPlayerName:lower() == "all" then
+                for _, targetPlayer in pairs(game:GetService("Players"):GetPlayers()) do
+                    if targetPlayer ~= game:GetService("Players").LocalPlayer and targetPlayer.Character and targetPlayer.Character:FindFirstChild("Humanoid") then
+                        if positiveHealthAmount ~= 0 then
+                            local args = {
+                                [1] = targetPlayer.Character.Humanoid,
+                                [2] = positiveHealthAmount
+                            }
+                            game:GetService("ReplicatedStorage").Remotes.DamageHumanoid:FireServer(unpack(args))
+                        end
+                        if negativeHealthAmount ~= 0 then
+                            local args = {
+                                [1] = targetPlayer.Character.Humanoid,
+                                [2] = negativeHealthAmount
+                            }
+                            game:GetService("ReplicatedStorage").Remotes.DamageHumanoid:FireServer(unpack(args))
+                        end
+                    end
                 end
-                if negativeHealthAmount ~= 0 then
-                    local args = {
-                        [1] = targetPlayer.Character.Humanoid,
-                        [2] = negativeHealthAmount
-                    }
-                    game:GetService("ReplicatedStorage").Remotes.DamageHumanoid:FireServer(unpack(args))
+            elseif targetPlayerName:lower() == "random" then
+                local targetPlayer = getRandomPlayer()
+                if targetPlayer and targetPlayer.Character and targetPlayer.Character:FindFirstChild("Humanoid") then
+                    if positiveHealthAmount ~= 0 then
+                        local args = {
+                            [1] = targetPlayer.Character.Humanoid,
+                            [2] = positiveHealthAmount
+                        }
+                        game:GetService("ReplicatedStorage").Remotes.DamageHumanoid:FireServer(unpack(args))
+                    end
+                    if negativeHealthAmount ~= 0 then
+                        local args = {
+                            [1] = targetPlayer.Character.Humanoid,
+                            [2] = negativeHealthAmount
+                        }
+                        game:GetService("ReplicatedStorage").Remotes.DamageHumanoid:FireServer(unpack(args))
+                    end
+                end
+            else
+                local targetPlayer = findPlayerByPartialName(targetPlayerName)
+                if targetPlayer and targetPlayer.Character and targetPlayer.Character:FindFirstChild("Humanoid") then
+                    if positiveHealthAmount ~= 0 then
+                        local args = {
+                            [1] = targetPlayer.Character.Humanoid,
+                            [2] = positiveHealthAmount
+                        }
+                        game:GetService("ReplicatedStorage").Remotes.DamageHumanoid:FireServer(unpack(args))
+                    end
+                    if negativeHealthAmount ~= 0 then
+                        local args = {
+                            [1] = targetPlayer.Character.Humanoid,
+                            [2] = negativeHealthAmount
+                        }
+                        game:GetService("ReplicatedStorage").Remotes.DamageHumanoid:FireServer(unpack(args))
+                    end
                 end
             end
             wait(0.1)  -- Adjust the delay as needed
@@ -349,7 +401,7 @@ local function addHealthGiverToggle()
     MainTab:AddTextbox({
         Name = "Damage Player",
         Default = "0",
-        TextDisappear = false,
+        TextDisappear = true,
         Callback = function(value)
             local amount = tonumber(value)
             if amount then
@@ -359,9 +411,9 @@ local function addHealthGiverToggle()
     })
 
     MainTab:AddTextbox({
-        Name = "Add Player Health",
+        Name = "Add Health",
         Default = "0",
-        TextDisappear = false,
+        TextDisappear = true,
         Callback = function(value)
             local amount = tonumber(value)
             if amount then
