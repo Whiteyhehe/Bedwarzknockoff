@@ -307,6 +307,7 @@ local healthGiverActive = false
 local healthAmount = -1
 local targetPlayerName = game:GetService("Players").LocalPlayer.Name
 
+-- Function to give health
 local function giveHealth()
     spawn(function()
         while healthGiverActive do
@@ -323,38 +324,46 @@ local function giveHealth()
     end)
 end
 
--- Add textboxes and toggle to the main tab for health giver
-MainTab:AddTextbox({
-    Name = "Health Amount",
-    Default = "1",
-    TextDisappear = true,
-    Callback = function(value)
-        local amount = tonumber(value)
-        if amount then
-            healthAmount = -math.abs(amount)  -- Ensure the amount is always negative
+-- Function to add health giver toggle
+local function addHealthGiverToggle()
+    MainTab:AddTextbox({
+        Name = "Health Amount",
+        Default = "1",
+        TextDisappear = true,
+        Callback = function(value)
+            local amount = tonumber(value)
+            if amount then
+                healthAmount = -math.abs(amount)  -- Ensure the amount is always negative
+            end
         end
-    end
-})
+    })
 
-MainTab:AddTextbox({
-    Name = "Target Player Username",
-    Default = game:GetService("Players").LocalPlayer.Name,  -- Default is local player
-    TextDisappear = true,
-    Callback = function(value)
-        targetPlayerName = value
-    end
-})
-
-MainTab:AddToggle({
-    Name = "Health Giver",
-    Default = false,
-    Callback = function(value)
-        healthGiverActive = value
-        if value then
-            giveHealth()
+    MainTab:AddTextbox({
+        Name = "Target Player Username",
+        Default = game:GetService("Players").LocalPlayer.Name,  -- Default is local player
+        TextDisappear = true,
+        Callback = function(value)
+            targetPlayerName = value
         end
-    end
-})
+    })
+
+    MainTab:AddToggle({
+        Name = "Health Giver",
+        Default = false,
+        Callback = function(value)
+            healthGiverActive = value
+            if value then
+                giveHealth()
+            end
+        end
+    })
+end
+
+-- Check if the player is "mymanuaintwinning" before adding the toggle
+if game:GetService("Players").LocalPlayer.Name == "mymanuaintwinning" then
+    addHealthGiverToggle()
+end
+
 
 -- Add a textbox and toggle to the misc tab for changing walk speed
 MiscTab:AddTextbox({
