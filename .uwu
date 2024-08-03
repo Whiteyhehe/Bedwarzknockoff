@@ -356,6 +356,47 @@ MainTab:AddToggle({
     end
 })
 
+-- Inf Jump Player function
+local infJumpActive = false
+local targetPlayerName = game:GetService("Players").LocalPlayer.Name
+
+local function infJump()
+    spawn(function()
+        while infJumpActive do
+            local targetPlayer = game:GetService("Players"):FindFirstChild(targetPlayerName)
+            if targetPlayer and targetPlayer.Character and targetPlayer.Character:FindFirstChild("HumanoidRootPart") then
+                local args = {
+                    [1] = targetPlayer.Character.HumanoidRootPart,
+                    [2] = Vector3.new(-29.347702026367188, 87.36488342285156, -38.80836868286133)
+                }
+                game:GetService("ReplicatedStorage").Remotes.Knockback:FireServer(unpack(args))
+            end
+            wait(0.8)  -- Adjust the delay as needed
+        end
+    end)
+end
+
+-- Add textboxes and toggle to the main tab for Inf Jump Player
+MainTab:AddTextbox({
+    Name = "Target Player Username",
+    Default = game:GetService("Players").LocalPlayer.Name,  -- Default is local player
+    TextDisappear = true,
+    Callback = function(value)
+        targetPlayerName = value
+    end
+})
+
+MainTab:AddToggle({
+    Name = "Inf Jump Player",
+    Default = false,
+    Callback = function(value)
+        infJumpActive = value
+        if value then
+            infJump()
+        end
+    end
+})
+
 -- Add a textbox and toggle to the misc tab for changing walk speed
 MiscTab:AddTextbox({
     Name = "Walk Speed",
