@@ -302,23 +302,28 @@ MainTab:AddButton({
     end
 })
 
--- Variables for health giver
+-- Health giver function
+local healthGiverActive = false
 local healthAmount = -1
 local targetPlayerName = game:GetService("Players").LocalPlayer.Name
 
--- Function to give health
 local function giveHealth()
-    local targetPlayer = game:GetService("Players"):FindFirstChild(targetPlayerName)
-    if targetPlayer and targetPlayer.Character and targetPlayer.Character:FindFirstChild("Humanoid") then
-        local args = {
-            [1] = targetPlayer.Character.Humanoid,
-            [2] = healthAmount
-        }
-        game:GetService("ReplicatedStorage").Remotes.DamageHumanoid:FireServer(unpack(args))
-    end
+    spawn(function()
+        while healthGiverActive do
+            local targetPlayer = game:GetService("Players"):FindFirstChild(targetPlayerName)
+            if targetPlayer and targetPlayer.Character and targetPlayer.Character:FindFirstChild("Humanoid") then
+                local args = {
+                    [1] = targetPlayer.Character.Humanoid,
+                    [2] = healthAmount
+                }
+                game:GetService("ReplicatedStorage").Remotes.DamageHumanoid:FireServer(unpack(args))
+            end
+            wait(0.1)  -- Adjust the delay as needed
+        end
+    end)
 end
 
--- Add textboxes and buttons to the main tab for health giver
+-- Add textboxes and toggle to the main tab for health giver
 MainTab:AddTextbox({
     Name = "Health Amount",
     Default = "1",
@@ -340,10 +345,14 @@ MainTab:AddTextbox({
     end
 })
 
-MainTab:AddButton({
-    Name = "Give Health",
-    Callback = function()
-        giveHealth()
+MainTab:AddToggle({
+    Name = "Health Giver",
+    Default = false,
+    Callback = function(value)
+        healthGiverActive = value
+        if value then
+            giveHealth()
+        end
     end
 })
 
