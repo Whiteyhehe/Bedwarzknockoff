@@ -17,26 +17,7 @@ local MiscTab = Window:MakeTab({
 })
 
 -- Variables for cooldown
-local cooldown = 0.0000000000000000000000000000001
-
--- Function to give resources
-local givingEmeralds = false
-local givingIron = false
-local givingDiamonds = false
-
-local function giveResources(resourceType)
-    while resourceType == "Emerald" and givingEmeralds or 
-          resourceType == "Iron" and givingIron or 
-          resourceType == "Diamond" and givingDiamonds do
-        local args = {
-            [1] = "98F06DF3-417F-4724-8684-B090920322B1",
-            [2] = resourceType,
-            [3] = true
-        }
-        game:GetService("ReplicatedStorage").Remotes.DestroyBlock:FireServer(unpack(args))
-        wait(cooldown)
-    end
-end
+local cooldown = 0.1
 
 -- Function to change walk speed
 local function changeWalkSpeed(speed)
@@ -119,14 +100,23 @@ MainTab:AddToggle({
     end
 })
 
--- Add toggles to the main tab
+-- Add toggles to the main tab for getting blocks
+local function getBlock(blockType)
+    local args = {
+        [1] = blockType
+    }
+    game:GetService("ReplicatedStorage").Remotes.GetBlock:FireServer(unpack(args))
+end
+
 MainTab:AddToggle({
     Name = "Give Emerald",
     Default = false,
     Callback = function(value)
-        givingEmeralds = value
         if value then
-            giveResources("Emerald")
+            while value do
+                getBlock("Emerald")
+                wait(cooldown)
+            end
         end
     end
 })
@@ -135,9 +125,11 @@ MainTab:AddToggle({
     Name = "Give Iron",
     Default = false,
     Callback = function(value)
-        givingIron = value
         if value then
-            giveResources("Iron")
+            while value do
+                getBlock("Iron")
+                wait(cooldown)
+            end
         end
     end
 })
@@ -146,9 +138,11 @@ MainTab:AddToggle({
     Name = "Give Diamond",
     Default = false,
     Callback = function(value)
-        givingDiamonds = value
         if value then
-            giveResources("Diamond")
+            while value do
+                getBlock("Diamond")
+                wait(cooldown)
+            end
         end
     end
 })
@@ -202,12 +196,7 @@ local customItemsActive = false
 local function getCustomItems()
     spawn(function()
         while customItemsActive do
-            local args = {
-                [1] = "98F06DF3-417F-4724-8684-B090920322B1",
-                [2] = resourceType,
-                [3] = true
-            }
-            game:GetService("ReplicatedStorage").Remotes.DestroyBlock:FireServer(unpack(args))
+            getBlock(resourceType)
             wait(cooldown)
         end
     end)
