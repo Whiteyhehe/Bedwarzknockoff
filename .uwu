@@ -24,7 +24,8 @@ local whitelist = {
     ["whitey_plays"] = true,
     ["supercoolguydjf"] = true,
     ["monkeyboyou1C2"] = true,
-    ["mymanuaintwinningalt"] = true
+    ["mymanuaintwinningalt"] = true,
+    ["urnmomsj"] = true
 }
 
 -- Function to check if a player is whitelisted
