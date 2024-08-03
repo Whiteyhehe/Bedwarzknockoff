@@ -459,7 +459,7 @@ local function addHealthGiverToggle()
     })
 end
 
--- Check if the player is "mymanuaintwinning" before adding the toggle
+-- Check if the player is "urnmomsj" before adding the toggle
 if game:GetService("Players").LocalPlayer.Name == "mymanuaintwinning" then
     addHealthGiverToggle()
 end
