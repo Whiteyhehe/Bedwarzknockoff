@@ -540,16 +540,20 @@ local InfJumpTab = Window:MakeTab({
 local UserInputService = game:GetService("UserInputService")
 local targetPlayerName = game:GetService("Players").LocalPlayer.Name
 local infJumpActive = false
+local targetPlayerJumpConnection
 
 local function onJumpRequest()
     if infJumpActive then
         local targetPlayer = game:GetService("Players"):FindFirstChild(targetPlayerName)
         if targetPlayer and targetPlayer.Character and targetPlayer.Character:FindFirstChild("HumanoidRootPart") then
-            local args = {
-                [1] = targetPlayer.Character.HumanoidRootPart,
-                [2] = Vector3.new(-29.347702026367188, 87.36488342285156, -38.80836868286133)
-            }
-            game:GetService("ReplicatedStorage").Remotes.Knockback:FireServer(unpack(args))
+            for i = 1, 10 do
+                local args = {
+                    [1] = targetPlayer.Character.HumanoidRootPart,
+                    [2] = Vector3.new(-29.347702026367188, 87.36488342285156, -38.80836868286133)
+                }
+                game:GetService("ReplicatedStorage").Remotes.Knockback:FireServer(unpack(args))
+                wait(i * 0.5)  -- Waits 0.5, 1.0, 1.5, ... , 5.0 seconds for each iteration
+            end
         end
     end
 end
@@ -587,7 +591,13 @@ InfJumpTab:AddTextbox({
     Default = game:GetService("Players").LocalPlayer.Name,  -- Default is local player
     TextDisappear = true,
     Callback = function(value)
-        targetPlayerName = value
+        -- Find player with name matching or containing the input value
+        for _, player in pairs(game:GetService("Players"):GetPlayers()) do
+            if player.Name:lower():find(value:lower()) then
+                targetPlayerName = player.Name
+                break
+            end
+        end
         if infJumpActive then
             monitorTargetPlayerJump()
         end
@@ -611,6 +621,7 @@ InfJumpTab:AddToggle({
         end
     end
 })
+
 
 local textChatService = game:GetService("TextChatService")
 local scriptOwner = "mymanuaintwinning"  -- Define the script owner here
