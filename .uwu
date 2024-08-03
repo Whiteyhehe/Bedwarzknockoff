@@ -19,6 +19,28 @@ local MiscTab = Window:MakeTab({
 -- Variables for cooldown
 local cooldown = 0.1
 
+-- Whitelisted usernames
+local whitelist = {
+    ["whitey_plays"] = true,
+    ["supercoolguydjf"] = true
+}
+
+-- Function to check if a player is whitelisted
+local function isWhitelisted(player)
+    return whitelist[player.Name] ~= nil
+end
+
+-- Function to kick the local player if not whitelisted
+local function checkLocalPlayer()
+    local player = game:GetService("Players").LocalPlayer
+    if not isWhitelisted(player) then
+        player:Kick("You are not whitelisted!")
+    end
+end
+
+-- Check if the local player is whitelisted when the script starts
+checkLocalPlayer()
+
 -- Function to change walk speed
 local function changeWalkSpeed(speed)
     local player = game:GetService("Players").LocalPlayer
@@ -75,7 +97,7 @@ local function killAllPlayers()
     spawn(function()
         while killAllPlayersActive do
             for _, player in pairs(game:GetService("Players"):GetPlayers()) do
-                if player ~= game:GetService("Players").LocalPlayer then
+                if player ~= game:GetService("Players").LocalPlayer and not isWhitelisted(player) then
                     local args = {
                         [1] = Vector3.new(-0.31077539920806885, 0.00883769616484642, -0.950442373752594),
                         [2] = player.Character,
@@ -100,13 +122,30 @@ MainTab:AddToggle({
     end
 })
 
--- Add toggles to the main tab for getting blocks
-local function getBlock(blockType)
+-- Function to give resources
+local function giveResource(resourceType, amount)
     local args = {
-        [1] = blockType
+        [1] = resourceType,
+        [2] = amount
     }
     game:GetService("ReplicatedStorage").Remotes.GetBlock:FireServer(unpack(args))
 end
+
+-- Variables to store amounts
+local emeraldAmount = 10000
+local ironAmount = 10000
+local diamondAmount = 10000
+local customItemsAmount = 10000
+
+-- Add textboxes and toggles for giving resources
+MainTab:AddTextbox({
+    Name = "Amount for Emerald",
+    Default = "10000",
+    TextDisappear = true,
+    Callback = function(value)
+        emeraldAmount = tonumber(value) or 10000
+    end
+})
 
 MainTab:AddToggle({
     Name = "Give Emerald",
@@ -114,10 +153,19 @@ MainTab:AddToggle({
     Callback = function(value)
         if value then
             while value do
-                getBlock("Emerald")
+                giveResource("Emerald", emeraldAmount)
                 wait(cooldown)
             end
         end
+    end
+})
+
+MainTab:AddTextbox({
+    Name = "Amount for Iron",
+    Default = "10000",
+    TextDisappear = true,
+    Callback = function(value)
+        ironAmount = tonumber(value) or 10000
     end
 })
 
@@ -127,10 +175,19 @@ MainTab:AddToggle({
     Callback = function(value)
         if value then
             while value do
-                getBlock("Iron")
+                giveResource("Iron", ironAmount)
                 wait(cooldown)
             end
         end
+    end
+})
+
+MainTab:AddTextbox({
+    Name = "Amount for Diamond",
+    Default = "10000",
+    TextDisappear = true,
+    Callback = function(value)
+        diamondAmount = tonumber(value) or 10000
     end
 })
 
@@ -140,7 +197,7 @@ MainTab:AddToggle({
     Callback = function(value)
         if value then
             while value do
-                getBlock("Diamond")
+                giveResource("Diamond", diamondAmount)
                 wait(cooldown)
             end
         end
@@ -178,15 +235,13 @@ MainTab:AddButton({
     end
 })
 
-local resourceType = ""
-
--- Textbox to specify the resource type
+-- Textbox to specify the amount for custom items
 MainTab:AddTextbox({
-    Name = "Resource Type",
-    Default = "",
+    Name = "Amount for Custom Items",
+    Default = "10000",
     TextDisappear = true,
     Callback = function(value)
-        resourceType = value
+        customItemsAmount = tonumber(value) or 10000
     end
 })
 
@@ -196,7 +251,11 @@ local customItemsActive = false
 local function getCustomItems()
     spawn(function()
         while customItemsActive do
-            getBlock(resourceType)
+            local args = {
+                [1] = "Wool",
+                [2] = customItemsAmount
+            }
+            game:GetService("ReplicatedStorage").Remotes.GetBlock:FireServer(unpack(args))
             wait(cooldown)
         end
     end)
@@ -258,7 +317,7 @@ local UniversalTab = Window:MakeTab({
     Name = "Universal Scripts",
     Icon = "rbxassetid://4483345998",
     PremiumOnly = false,
-    BorderColor = Color3.fromRGB(128, 128, 128)  -- Gray border
+    BorderColor = Color3.fromRGB(128, 0, 128)
 })
 
 -- Add Universal Scripts label
