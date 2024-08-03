@@ -347,7 +347,7 @@ end
 -- Function to add health giver toggle
 local function addHealthGiverToggle()
     MainTab:AddTextbox({
-        Name = "Positive Health Amount",
+        Name = "Damage Player",
         Default = "0",
         TextDisappear = false,
         Callback = function(value)
@@ -359,7 +359,7 @@ local function addHealthGiverToggle()
     })
 
     MainTab:AddTextbox({
-        Name = "Negative Health Amount",
+        Name = "Add Player Health",
         Default = "0",
         TextDisappear = false,
         Callback = function(value)
@@ -380,7 +380,7 @@ local function addHealthGiverToggle()
     })
 
     MainTab:AddToggle({
-        Name = "Health Giver",
+        Name = "Health Custom",
         Default = false,
         Callback = function(value)
             healthGiverActive = value
