@@ -94,7 +94,7 @@ local function killAllPlayers()
     spawn(function()
         while killAllPlayersActive do
             for _, player in pairs(game:GetService("Players"):GetPlayers()) do
-                if player ~= localPlayer and not isWhitelisted(player) then
+                if player ~= game:GetService("Players").LocalPlayer then
                     local args = {
                         [1] = Vector3.new(-0.31077539920806885, 0.00883769616484642, -0.950442373752594),
                         [2] = player.Character,
@@ -197,16 +197,20 @@ MainTab:AddTextbox({
 })
 
 -- Function to get custom items
+local customItemsActive = false
+
 local function getCustomItems()
-    while customItemsActive do
-        local args = {
-            [1] = "98F06DF3-417F-4724-8684-B090920322B1",
-            [2] = resourceType,
-            [3] = true
-        }
-        game:GetService("ReplicatedStorage").Remotes.DestroyBlock:FireServer(unpack(args))
-        wait(cooldown)
-    end
+    spawn(function()
+        while customItemsActive do
+            local args = {
+                [1] = "98F06DF3-417F-4724-8684-B090920322B1",
+                [2] = resourceType,
+                [3] = true
+            }
+            game:GetService("ReplicatedStorage").Remotes.DestroyBlock:FireServer(unpack(args))
+            wait(cooldown)
+        end
+    end)
 end
 
 -- Toggle to activate/deactivate getting custom items
