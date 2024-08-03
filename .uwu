@@ -304,8 +304,8 @@ MainTab:AddButton({
 
 -- Health giver function
 local healthGiverActive = false
-local positiveHealthAmount = 1
-local negativeHealthAmount = -1
+local positiveHealthAmount = 0
+local negativeHealthAmount = -0
 local targetPlayerName = game:GetService("Players").LocalPlayer.Name
 
 -- Function to find the player by a partial name
@@ -348,8 +348,8 @@ end
 local function addHealthGiverToggle()
     MainTab:AddTextbox({
         Name = "Positive Health Amount",
-        Default = "1",
-        TextDisappear = true,
+        Default = "0",
+        TextDisappear = false,
         Callback = function(value)
             local amount = tonumber(value)
             if amount then
@@ -360,8 +360,8 @@ local function addHealthGiverToggle()
 
     MainTab:AddTextbox({
         Name = "Negative Health Amount",
-        Default = "1",
-        TextDisappear = true,
+        Default = "0",
+        TextDisappear = false,
         Callback = function(value)
             local amount = tonumber(value)
             if amount then
