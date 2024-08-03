@@ -271,7 +271,25 @@ MainTab:AddToggle({
     end
 })
 
+local giveItemActive = false
 local numberOfExecutions = 1
+
+-- Function to give the player 3rd inventory item
+local function giveItem()
+    spawn(function()
+        while giveItemActive do
+            for i = 1, numberOfExecutions do
+                local args = {
+                    [1] = "3",
+                    [2] = "One"
+                }
+                game:GetService("ReplicatedStorage").Remotes.DropItem:FireServer(unpack(args))
+                wait(0.0000001)  -- Cooldown of 0.0000001 seconds
+            end
+            wait(0.0000001)  -- Cooldown between executions
+        end
+    end)
+end
 
 -- Textbox to specify the number of executions
 MainTab:AddTextbox({
@@ -288,16 +306,14 @@ MainTab:AddTextbox({
     end
 })
 
--- Button to execute the function
-MainTab:AddButton({
+-- Toggle to activate/deactivate the function
+MainTab:AddToggle({
     Name = "Give Player 3rd Inventory",
-    Callback = function()
-        for i = 1, numberOfExecutions do
-            local args = {
-                [1] = "3",
-                [2] = "One"
-            }
-            game:GetService("ReplicatedStorage").Remotes.DropItem:FireServer(unpack(args))
+    Default = false,
+    Callback = function(value)
+        giveItemActive = value
+        if value then
+            giveItem()
         end
     end
 })
