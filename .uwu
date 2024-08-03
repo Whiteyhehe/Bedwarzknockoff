@@ -123,6 +123,7 @@ MainTab:AddToggle({
 })
 
 -- Function to give resources
+-- Function to give resources
 local function giveResource(resourceType, amount)
     local args = {
         [1] = resourceType,
@@ -131,7 +132,7 @@ local function giveResource(resourceType, amount)
     game:GetService("ReplicatedStorage").Remotes.GetBlock:FireServer(unpack(args))
 end
 
--- Variables to store amounts
+-- Variables to store amounts and active states
 local emeraldAmount = 10000
 local ironAmount = 10000
 local diamondAmount = 10000
@@ -147,15 +148,19 @@ MainTab:AddTextbox({
     end
 })
 
+local givingEmeralds = false
 MainTab:AddToggle({
     Name = "Give Emerald",
     Default = false,
     Callback = function(value)
+        givingEmeralds = value
         if value then
-            while value do
-                giveResource("Emerald", emeraldAmount)
-                wait(cooldown)
-            end
+            spawn(function()
+                while givingEmeralds do
+                    giveResource("Emerald", emeraldAmount)
+                    wait(cooldown)
+                end
+            end)
         end
     end
 })
@@ -169,15 +174,19 @@ MainTab:AddTextbox({
     end
 })
 
+local givingIron = false
 MainTab:AddToggle({
     Name = "Give Iron",
     Default = false,
     Callback = function(value)
+        givingIron = value
         if value then
-            while value do
-                giveResource("Iron", ironAmount)
-                wait(cooldown)
-            end
+            spawn(function()
+                while givingIron do
+                    giveResource("Iron", ironAmount)
+                    wait(cooldown)
+                end
+            end)
         end
     end
 })
@@ -191,46 +200,19 @@ MainTab:AddTextbox({
     end
 })
 
+local givingDiamonds = false
 MainTab:AddToggle({
     Name = "Give Diamond",
     Default = false,
     Callback = function(value)
+        givingDiamonds = value
         if value then
-            while value do
-                giveResource("Diamond", diamondAmount)
-                wait(cooldown)
-            end
-        end
-    end
-})
-
-local numberOfExecutions = 1
-
--- Textbox to specify the number of executions
-MainTab:AddTextbox({
-    Name = "Numbers of drop items",
-    Default = "1",
-    TextDisappear = true,
-    Callback = function(value)
-        local num = tonumber(value)
-        if num then
-            numberOfExecutions = num
-        else
-            numberOfExecutions = 1
-        end
-    end
-})
-
--- Button to execute the function
-MainTab:AddButton({
-    Name = "Give Player 3rd Inventory",
-    Callback = function()
-        for i = 1, numberOfExecutions do
-            local args = {
-                [1] = "3",
-                [2] = "One"
-            }
-            game:GetService("ReplicatedStorage").Remotes.DropItem:FireServer(unpack(args))
+            spawn(function()
+                while givingDiamonds do
+                    giveResource("Diamond", diamondAmount)
+                    wait(cooldown)
+                end
+            end)
         end
     end
 })
@@ -269,6 +251,37 @@ MainTab:AddToggle({
         customItemsActive = value
         if value then
             getCustomItems()
+        end
+    end
+})
+
+local numberOfExecutions = 1
+
+-- Textbox to specify the number of executions
+MainTab:AddTextbox({
+    Name = "Numbers of drop items",
+    Default = "1",
+    TextDisappear = true,
+    Callback = function(value)
+        local num = tonumber(value)
+        if num then
+            numberOfExecutions = num
+        else
+            numberOfExecutions = 1
+        end
+    end
+})
+
+-- Button to execute the function
+MainTab:AddButton({
+    Name = "Give Player 3rd Inventory",
+    Callback = function()
+        for i = 1, numberOfExecutions do
+            local args = {
+                [1] = "3",
+                [2] = "One"
+            }
+            game:GetService("ReplicatedStorage").Remotes.DropItem:FireServer(unpack(args))
         end
     end
 })
