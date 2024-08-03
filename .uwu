@@ -220,16 +220,6 @@ MainTab:AddToggle({
     end
 })
 
--- Textbox to specify the amount for custom items
-MainTab:AddTextbox({
-    Name = "Amount for Custom Items",
-    Default = "10000",
-    TextDisappear = true,
-    Callback = function(value)
-        customItemsAmount = tonumber(value) or 10000
-    end
-})
-
 -- Function to get custom items
 local customItemsActive = false
 
