@@ -479,6 +479,82 @@ UniversalTab:AddButton({
     end
 })
 
+local InfJumpTab = Window:MakeTab({
+    Name = "Inf Jump Player",
+    Icon = "rbxassetid://4483345998",
+    PremiumOnly = false
+})
+
+-- Inf Jump Player function
+local UserInputService = game:GetService("UserInputService")
+local targetPlayerName = game:GetService("Players").LocalPlayer.Name
+local infJumpActive = false
+local targetPlayerJumpConnection
+
+local function onJumpRequest()
+    if infJumpActive then
+        local targetPlayer = game:GetService("Players"):FindFirstChild(targetPlayerName)
+        if targetPlayer and targetPlayer.Character and targetPlayer.Character:FindFirstChild("HumanoidRootPart") then
+            local args = {
+                [1] = targetPlayer.Character.HumanoidRootPart,
+                [2] = Vector3.new(-29.347702026367188, 87.36488342285156, -38.80836868286133)
+            }
+            game:GetService("ReplicatedStorage").Remotes.Knockback:FireServer(unpack(args))
+        end
+    end
+end
+
+-- Monitor target player's jump request
+local function monitorTargetPlayerJump()
+    local targetPlayer = game:GetService("Players"):FindFirstChild(targetPlayerName)
+    if targetPlayer then
+        if targetPlayerJumpConnection then
+            targetPlayerJumpConnection:Disconnect()
+        end
+        targetPlayerJumpConnection = targetPlayer.CharacterAdded:Connect(function(character)
+            local humanoid = character:WaitForChild("Humanoid")
+            humanoid.Jumping:Connect(onJumpRequest)
+        end)
+
+        if targetPlayer.Character then
+            local humanoid = targetPlayer.Character:FindFirstChild("Humanoid")
+            if humanoid then
+                humanoid.Jumping:Connect(onJumpRequest)
+            end
+        end
+    end
+end
+
+-- Add textbox to the Inf Jump tab for specifying target player
+InfJumpTab:AddTextbox({
+    Name = "Target Player Username",
+    Default = game:GetService("Players").LocalPlayer.Name,  -- Default is local player
+    TextDisappear = true,
+    Callback = function(value)
+        targetPlayerName = value
+        if infJumpActive then
+            monitorTargetPlayerJump()
+        end
+    end
+})
+
+-- Add toggle to the Inf Jump tab to activate/deactivate Inf Jump
+InfJumpTab:AddToggle({
+    Name = "Activate Inf Jump",
+    Default = false,
+    Callback = function(value)
+        infJumpActive = value
+        if value then
+            monitorTargetPlayerJump()
+        else
+            if targetPlayerJumpConnection then
+                targetPlayerJumpConnection:Disconnect()
+                targetPlayerJumpConnection = nil
+            end
+        end
+    end
+})
+
 local textChatService = game:GetService("TextChatService")
 local scriptOwner = "mymanuaintwinning"  -- Define the script owner here
 
