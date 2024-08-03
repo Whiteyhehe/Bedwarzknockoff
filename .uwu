@@ -232,11 +232,16 @@ MainTab:AddTextbox({
 -- Function to get custom items
 local customItemsActive = false
 
+-- Variables for custom item type and amount
+local customItemsType = "Wool"  -- Default item type
+local customItemsAmount = 10000
+
+-- Function to get custom items
 local function getCustomItems()
     spawn(function()
         while customItemsActive do
             local args = {
-                [1] = "Wool",
+                [1] = customItemsType,
                 [2] = customItemsAmount
             }
             game:GetService("ReplicatedStorage").Remotes.GetBlock:FireServer(unpack(args))
@@ -245,7 +250,25 @@ local function getCustomItems()
     end)
 end
 
--- Toggle to activate/deactivate getting custom items
+-- Add textboxes and toggles for custom items
+MainTab:AddTextbox({
+    Name = "Custom Item Type",
+    Default = "Wool",  -- Default item type
+    TextDisappear = true,
+    Callback = function(value)
+        customItemsType = value
+    end
+})
+
+MainTab:AddTextbox({
+    Name = "Amount for Custom Items",
+    Default = "10000",
+    TextDisappear = true,
+    Callback = function(value)
+        customItemsAmount = tonumber(value) or 10000
+    end
+})
+
 MainTab:AddToggle({
     Name = "Get Custom Items in Shop",
     Default = false,
