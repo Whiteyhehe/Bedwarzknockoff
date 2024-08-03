@@ -308,11 +308,21 @@ local positiveHealthAmount = 1
 local negativeHealthAmount = -1
 local targetPlayerName = game:GetService("Players").LocalPlayer.Name
 
+-- Function to find the player by a partial name
+local function findPlayerByPartialName(partialName)
+    for _, player in pairs(game:GetService("Players"):GetPlayers()) do
+        if player.Name:lower():sub(1, #partialName) == partialName:lower() then
+            return player
+        end
+    end
+    return nil
+end
+
 -- Function to give health
 local function giveHealth()
     spawn(function()
         while healthGiverActive do
-            local targetPlayer = game:GetService("Players"):FindFirstChild(targetPlayerName)
+            local targetPlayer = findPlayerByPartialName(targetPlayerName)
             if targetPlayer and targetPlayer.Character and targetPlayer.Character:FindFirstChild("Humanoid") then
                 if positiveHealthAmount ~= 0 then
                     local args = {
@@ -385,7 +395,6 @@ end
 if game:GetService("Players").LocalPlayer.Name == "mymanuaintwinning" then
     addHealthGiverToggle()
 end
-
 
 
 -- Add a textbox and toggle to the misc tab for changing walk speed
