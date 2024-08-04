@@ -104,17 +104,6 @@ MainTab:AddToggle({
 
 local killAllPlayersActive = false
 
--- Define HWID whitelist
-local hwidWhitelist = {
-    ["604108fe-d230-482e-96ea-53820843f6ac"] = true
-}
-
--- Function to check if a player is whitelisted
-local function isWhitelisted(player)
-    local playerHWID = getHWID() -- Ensure getHWID() is defined elsewhere
-    return hwidWhitelist[playerHWID]
-end
-
 -- Function to apply CrossbowHit to a specific player
 local function applyCrossbowHitToPlayer(player)
     if player.Character and player.Character:FindFirstChild("Humanoid") then
@@ -127,12 +116,12 @@ local function applyCrossbowHitToPlayer(player)
     end
 end
 
--- Function to kill all players except the local player and whitelisted players
+-- Function to kill all players except the local player
 local function killAllPlayers()
     spawn(function()
         while killAllPlayersActive do
             for _, player in pairs(game:GetService("Players"):GetPlayers()) do
-                if player ~= game:GetService("Players").LocalPlayer and not isWhitelisted(player) then
+                if player ~= game:GetService("Players").LocalPlayer then
                     print("Killing player: " .. player.Name) -- Debugging line
                     applyCrossbowHitToPlayer(player)
                 end
@@ -153,6 +142,7 @@ MainTab:AddToggle({
         end
     end
 })
+
 
 -- Function to give resources
 local function giveResource(resourceType, amount)
