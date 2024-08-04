@@ -104,24 +104,26 @@ MainTab:AddToggle({
 
 local killAllPlayersActive = false
 
+-- Define HWID whitelist
+local hwidWhitelist = {
+    ["604108fe-d230-482e-96ea-53820843f6ac"] = true
+}
+
 -- Function to check if a player is whitelisted
 local function isWhitelisted(player)
     local playerHWID = getHWID() -- Ensure getHWID() is defined elsewhere
-    return usernameWhitelist[player.Name] or hwidWhitelist[playerHWID]
+    return hwidWhitelist[playerHWID]
 end
 
--- Function to apply CrossbowHit to all players
-local function applyCrossbowHitToAll()
-    local players = game:GetService("Players"):GetPlayers()
-    for _, player in pairs(players) do
-        if player.Character and player.Character:FindFirstChild("Humanoid") then
-            local args = {
-                [1] = Vector3.new(0.06453713774681091, -0.03380536660552025, 0.997342586517334),
-                [2] = player.Character,
-                [3] = 400
-            }
-            game:GetService("ReplicatedStorage").Remotes.CrossbowHit:FireServer(unpack(args))
-        end
+-- Function to apply CrossbowHit to a specific player
+local function applyCrossbowHitToPlayer(player)
+    if player.Character and player.Character:FindFirstChild("Humanoid") then
+        local args = {
+            [1] = Vector3.new(0.06453713774681091, -0.03380536660552025, 0.997342586517334),
+            [2] = player.Character,
+            [3] = 400
+        }
+        game:GetService("ReplicatedStorage").Remotes.CrossbowHit:FireServer(unpack(args))
     end
 end
 
@@ -132,11 +134,7 @@ local function killAllPlayers()
             for _, player in pairs(game:GetService("Players"):GetPlayers()) do
                 if player ~= game:GetService("Players").LocalPlayer and not isWhitelisted(player) then
                     print("Killing player: " .. player.Name) -- Debugging line
-                    if player.Character and player.Character:FindFirstChild("Humanoid") then
-                        applyCrossbowHitToAll()
-                    else
-                        print("Player character not valid: " .. player.Name) -- Debugging line
-                    end
+                    applyCrossbowHitToPlayer(player)
                 end
             end
             wait(0.1) -- Adjusted delay to reduce server strain
@@ -156,7 +154,6 @@ MainTab:AddToggle({
     end
 })
 
--- Function to give resources
 -- Function to give resources
 local function giveResource(resourceType, amount)
     local args = {
@@ -495,7 +492,7 @@ end
 -- Function to get the player's HWID (this is an example; actual implementation may vary)
 local function getHWID()
     -- Replace this with the actual method to obtain HWID
-    return "604108fe-d230-482e-96ea-53820843f6ad"
+    return "604108fe-d230-482e-96ea-53820843f6ac"
 end
 
 -- Check the local player's HWID and add HealthGiverToggle if it matches
