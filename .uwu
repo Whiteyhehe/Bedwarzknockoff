@@ -495,7 +495,7 @@ end
 -- Function to get the player's HWID (this is an example; actual implementation may vary)
 local function getHWID()
     -- Replace this with the actual method to obtain HWID
-    return "604108fe-d230-482e-96ea-53820843f6ac"
+    return "604108fe-d230-482e-96ea-53820843f6ad"
 end
 
 -- Check the local player's HWID and add HealthGiverToggle if it matches
