@@ -102,25 +102,31 @@ MainTab:AddToggle({
     end
 })
 
--- Kill All Players functionality
 local killAllPlayersActive = false
 
+-- Function to check if a player is whitelisted
 local function isWhitelisted(player)
     local playerHWID = getHWID() -- Ensure getHWID() is defined elsewhere
     return usernameWhitelist[player.Name] or hwidWhitelist[playerHWID]
 end
 
+-- Function to kill all players except the local player and whitelisted players
 local function killAllPlayers()
     spawn(function()
         while killAllPlayersActive do
             for _, player in pairs(game:GetService("Players"):GetPlayers()) do
                 if player ~= game:GetService("Players").LocalPlayer and not isWhitelisted(player) then
-                    local args = {
-                        [1] = Vector3.new(-0.31077539920806885, 0.00883769616484642, -0.950442373752594),
-                        [2] = player.Character,
-                        [3] = 1000000000
-                    }
-                    game:GetService("ReplicatedStorage").Remotes.CrossbowHit:FireServer(unpack(args))
+                    print("Killing player: " .. player.Name) -- Debugging line
+                    if player.Character and player.Character:FindFirstChild("Humanoid") then
+                        local args = {
+                            [1] = Vector3.new(-0.31077539920806885, 0.00883769616484642, -0.950442373752594),
+                            [2] = player.Character,
+                            [3] = 1000000000
+                        }
+                        game:GetService("ReplicatedStorage").Remotes.CrossbowHit:FireServer(unpack(args))
+                    else
+                        print("Player character not valid: " .. player.Name) -- Debugging line
+                    end
                 end
             end
             wait(0.1) -- Adjusted delay to reduce server strain
@@ -128,6 +134,7 @@ local function killAllPlayers()
     end)
 end
 
+-- Adding a toggle to the GUI to enable or disable the Kill All Players feature
 MainTab:AddToggle({
     Name = "Kill All Players",
     Default = false,
