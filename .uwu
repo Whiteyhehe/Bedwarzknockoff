@@ -20,8 +20,8 @@ local MiscTab = Window:MakeTab({
 local cooldown = 0.1
 
 local usernameWhitelist = {
-    ["monkeyboyou1C2"] = true,
-    ["supercoolguydj"] = true,
+    ["a"] = true,
+    ["q"] = true,
     ["mymanuaintwinning"] = true,
     ["e"] = true,
     ["e"] = true
