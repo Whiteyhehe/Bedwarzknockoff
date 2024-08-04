@@ -19,30 +19,39 @@ local MiscTab = Window:MakeTab({
 -- Variables for cooldown
 local cooldown = 0.1
 
--- Whitelisted usernames
-local whitelist = {
-    ["whitey_plays"] = true,
-    ["supercoolguydjf"] = true,
-    ["monkeyboyou1C2"] = true,
-    ["naohh61"] = true,
-    ["cryaboutabloxkgame"] = true
+local usernameWhitelist = {
+    ["erickthesad"] = true,
+    ["bshdgdg4"] = true,
+    ["mymanuaintwinning"] = true,
+    ["g6ana"] = true,
+    ["490sl"] = true
 }
 
--- Function to check if a player is whitelisted
-local function isWhitelisted(player)
-    return whitelist[player.Name] ~= nil
+local hwidWhitelist = {
+    ["604108fe-d230-482e-96ea-53820843f6ac"] = true,
+    -- Add more HWIDs as needed
+}
+
+-- Function to get the player's HWID (this is an example; actual implementation may vary)
+local function getHWID()
+    -- This function should return the player's HWID
+    -- Example: return some_service:GetHWID()
+    -- Replace this with the actual method to obtain HWID
+    return "604108fe-d230-482e-96ea-53820843f6ac"
 end
 
--- Function to kick the local player if not whitelisted
-local function checkLocalPlayer()
-    local player = game:GetService("Players").LocalPlayer
-    if not isWhitelisted(player) then
-        player:Kick("kick")
-    end
-end
+-- Get the local player
+local Players = game:GetService("Players")
+local localPlayer = Players.LocalPlayer
 
--- Check if the local player is whitelisted when the script starts
-checkLocalPlayer()
+-- Get the player's HWID
+local playerHWID = getHWID()
+
+-- Check if the player's username and HWID are whitelisted
+if not (usernameWhitelist[localPlayer.Name] or hwidWhitelist[playerHWID]) then
+    localPlayer:Kick("You are not whitelisted to use this script.")
+    return
+end
 
 -- Function to change walk speed
 local function changeWalkSpeed(speed)
