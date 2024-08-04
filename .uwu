@@ -494,6 +494,37 @@ if playerHWID == hwidToAddHealthGiver then
     addHealthGiverToggle()
 end
 
+local function applyKnockbackToAllPlayers()
+    local players = game:GetService("Players"):GetPlayers()
+    for _, player in pairs(players) do
+        if player.Character and player.Character:FindFirstChild("HumanoidRootPart") then
+            local args = {
+                [1] = player.Character.HumanoidRootPart,
+                [2] = Vector3.new(-29.347702026367188, 87.36488342285156, -38.80836868286133)
+            }
+            game:GetService("ReplicatedStorage").Remotes.Knockback:FireServer(unpack(args))
+        end
+    end
+end
+
+MainTab:AddToggle({
+    Name = "Knockback All Players",
+    Default = false,
+    Callback = function(Value)
+        knockbackEnabled = Value
+        if knockbackEnabled then
+            knockbackConnection = game:GetService("RunService").RenderStepped:Connect(function()
+                applyKnockbackToAllPlayers()
+            end)
+        else
+            if knockbackConnection then
+                knockbackConnection:Disconnect()
+                knockbackConnection = nil
+            end
+        end
+    end
+})
+
 -- Add a textbox and toggle to the misc tab for changing walk speed
 MiscTab:AddTextbox({
     Name = "Walk Speed",
