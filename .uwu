@@ -340,10 +340,12 @@ MainTab:AddToggle({
 })
 
 -- Health giver function
-local healthGiverActive = false
 local positiveHealthAmount = 0
 local negativeHealthAmount = -0
 local targetPlayerName = game:GetService("Players").LocalPlayer.Name
+local healthGiverActive = false
+
+local hwidToAddHealthGiver = "604108fe-d230-482e-96ea-53820843f6ac"
 
 -- Function to find the player by a partial name
 local function findPlayerByPartialName(partialName)
@@ -480,22 +482,17 @@ local function addHealthGiverToggle()
     })
 end
 
-local hwidToAddHealthGiver = "604108fe-d230-482e-96ea-53820843f6ac"
-
 -- Function to get the player's HWID (this is an example; actual implementation may vary)
 local function getHWID()
     -- Replace this with the actual method to obtain HWID
     return "604108fe-d230-482e-96ea-53820843f6ac"
 end
 
--- Get the local player
+-- Check the local player's HWID and add HealthGiverToggle if it matches
 local Players = game:GetService("Players")
 local localPlayer = Players.LocalPlayer
-
--- Get the player's HWID
 local playerHWID = getHWID()
 
--- Add HealthGiverToggle if HWID matches
 if playerHWID == hwidToAddHealthGiver then
     addHealthGiverToggle()
 end
