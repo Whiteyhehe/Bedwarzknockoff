@@ -28,7 +28,7 @@ local usernameWhitelist = {
 }
 
 local hwidWhitelist = {
-    ["604108fe-d230-482e-96ea-53820843f6a"] = true,
+    ["604108fe-d230-482e-96ea-53820843f6ac"] = true,
     -- Add more HWIDs as needed
 }
 
