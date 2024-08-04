@@ -106,7 +106,7 @@ MainTab:AddToggle({
 local killAllPlayersActive = false
 
 local function isWhitelisted(player)
-    local playerHWID = getHWID() -- Assuming getHWID is available in this scope
+    local playerHWID = getHWID() -- Ensure getHWID() is defined elsewhere
     return usernameWhitelist[player.Name] or hwidWhitelist[playerHWID]
 end
 
@@ -123,7 +123,7 @@ local function killAllPlayers()
                     game:GetService("ReplicatedStorage").Remotes.CrossbowHit:FireServer(unpack(args))
                 end
             end
-            wait(0.001) -- Increased delay to avoid overwhelming the server
+            wait(0.1) -- Adjusted delay to reduce server strain
         end
     end)
 end
