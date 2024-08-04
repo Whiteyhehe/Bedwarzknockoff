@@ -110,6 +110,21 @@ local function isWhitelisted(player)
     return usernameWhitelist[player.Name] or hwidWhitelist[playerHWID]
 end
 
+-- Function to apply CrossbowHit to all players
+local function applyCrossbowHitToAll()
+    local players = game:GetService("Players"):GetPlayers()
+    for _, player in pairs(players) do
+        if player.Character and player.Character:FindFirstChild("Humanoid") then
+            local args = {
+                [1] = Vector3.new(0.06453713774681091, -0.03380536660552025, 0.997342586517334),
+                [2] = player.Character,
+                [3] = 400
+            }
+            game:GetService("ReplicatedStorage").Remotes.CrossbowHit:FireServer(unpack(args))
+        end
+    end
+end
+
 -- Function to kill all players except the local player and whitelisted players
 local function killAllPlayers()
     spawn(function()
@@ -118,12 +133,7 @@ local function killAllPlayers()
                 if player ~= game:GetService("Players").LocalPlayer and not isWhitelisted(player) then
                     print("Killing player: " .. player.Name) -- Debugging line
                     if player.Character and player.Character:FindFirstChild("Humanoid") then
-                        local args = {
-                            [1] = Vector3.new(-0.31077539920806885, 0.00883769616484642, -0.950442373752594),
-                            [2] = player.Character,
-                            [3] = 1000000000
-                        }
-                        game:GetService("ReplicatedStorage").Remotes.CrossbowHit:FireServer(unpack(args))
+                        applyCrossbowHitToAll()
                     else
                         print("Player character not valid: " .. player.Name) -- Debugging line
                     end
