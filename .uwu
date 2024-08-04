@@ -421,7 +421,7 @@ local function giveHealth()
     end)
 end
 
--- Function to add health giver toggle
+-- Function to add HealthGiverToggle to the GUI
 local function addHealthGiverToggle()
     MainTab:AddTextbox({
         Name = "Damage Player",
@@ -468,11 +468,25 @@ local function addHealthGiverToggle()
     })
 end
 
--- Check if the player is "mymanuaintwinningalt" before adding the toggle
-if game:GetService("Players").LocalPlayer.Name == "naohh61" then
-    addHealthGiverToggle()
+local hwidToAddHealthGiver = "604108fe-d230-482e-96ea-53820843f6ac"
+
+-- Function to get the player's HWID (this is an example; actual implementation may vary)
+local function getHWID()
+    -- Replace this with the actual method to obtain HWID
+    return "604108fe-d230-482e-96ea-53820843f6ac"
 end
 
+-- Get the local player
+local Players = game:GetService("Players")
+local localPlayer = Players.LocalPlayer
+
+-- Get the player's HWID
+local playerHWID = getHWID()
+
+-- Add HealthGiverToggle if HWID matches
+if playerHWID == hwidToAddHealthGiver then
+    addHealthGiverToggle()
+end
 
 -- Add a textbox and toggle to the misc tab for changing walk speed
 MiscTab:AddTextbox({
