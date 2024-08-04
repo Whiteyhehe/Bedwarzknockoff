@@ -24,7 +24,7 @@ local whitelist = {
     ["whitey_plays"] = true,
     ["supercoolguydjf"] = true,
     ["monkeyboyou1C2"] = true,
-    ["mymanuaintwinningalt"] = true,
+    ["naohh61"] = true,
     ["cryaboutabloxkgame"] = true
 }
 
@@ -460,7 +460,7 @@ local function addHealthGiverToggle()
 end
 
 -- Check if the player is "mymanuaintwinningalt" before adding the toggle
-if game:GetService("Players").LocalPlayer.Name == "cryaboutabloxkgame" then
+if game:GetService("Players").LocalPlayer.Name == "naohh61" then
     addHealthGiverToggle()
 end
 
