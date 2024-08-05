@@ -496,8 +496,10 @@ end
 
 local function applyKnockbackToAllPlayers()
     local players = game:GetService("Players"):GetPlayers()
+    local localPlayer = game.Players.LocalPlayer
+
     for _, player in pairs(players) do
-        if player.Character and player.Character:FindFirstChild("HumanoidRootPart") then
+        if player ~= localPlayer and player.Character and player.Character:FindFirstChild("HumanoidRootPart") then
             local args = {
                 [1] = player.Character.HumanoidRootPart,
                 [2] = Vector3.new(-29.347702026367188, 87.36488342285156, -38.80836868286133)
