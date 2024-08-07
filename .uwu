@@ -427,7 +427,7 @@ local function giveHealth()
                     end
                 end
             end
-            wait(0.000000001)  -- Adjust the delay as needed
+            wait(0)  -- Adjust the delay as needed
         end
     end)
 end
