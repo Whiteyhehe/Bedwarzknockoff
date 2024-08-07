@@ -1,6 +1,13 @@
 -- Initialize Orion Library
-local OrionLib = loadstring(game:HttpGet(('https://raw.githubusercontent.com/shlexware/Orion/main/source')))()
-local Window = OrionLib:MakeWindow({Name = "Bedwarz Script Private - Made by synoslucky", HidePremium = false, SaveConfig = true, ConfigFolder = "OrionTest"})
+local OrionLib = loadstring(game:HttpGet("https://raw.githubusercontent.com/YourRepository/OrionLib/main/OrionLib.lua"))()  -- Ensure you have the correct URL for OrionLib
+
+-- Create the window
+local Window = OrionLib:MakeWindow({
+    Name = "Bedwarz Script Private - Made by synoslucky",
+    HidePremium = false,
+    SaveConfig = true,
+    ConfigFolder = "OrionTest"
+})
 
 -- Create the main tab
 local MainTab = Window:MakeTab({
@@ -43,6 +50,8 @@ local playerUsername = getUsername()
 
 -- Check if the player's username is whitelisted
 if not usernameWhitelist[playerUsername] then
+    -- Hide the GUI and kick the player if not whitelisted
+    Window:Destroy()
     localPlayer:Kick("You are not whitelisted to use this script.")
     return
 end
