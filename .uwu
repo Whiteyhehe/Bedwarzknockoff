@@ -23,32 +23,26 @@ local usernameWhitelist = {
     ["a"] = true,
     ["q"] = true,
     ["mymanuaintwinning"] = true,
-    ["e"] = true,
     ["e"] = true
 }
 
-local hwidWhitelist = {
-    ["604108fe-d230-482e-96ea-53820843f6ac"] = true,
-    -- Add more HWIDs as needed
-}
-
--- Function to get the player's HWID (this is an example; actual implementation may vary)
-local function getHWID()
-    -- This function should return the player's HWID
-    -- Example: return some_service:GetHWID()
-    -- Replace this with the actual method to obtain HWID
-    return "604108fe-d230-482e-96ea-53820843f6ac"
+-- Function to get the player's username (this is an example; actual implementation may vary)
+local function getUsername()
+    -- This function should return the player's username
+    -- Example: return some_service:GetUsername()
+    -- Replace this with the actual method to obtain the username
+    return game.Players.LocalPlayer.Name
 end
 
 -- Get the local player
 local Players = game:GetService("Players")
 local localPlayer = Players.LocalPlayer
 
--- Get the player's HWID
-local playerHWID = getHWID()
+-- Get the player's username
+local playerUsername = getUsername()
 
--- Check if the player's username and HWID are whitelisted
-if not (usernameWhitelist[localPlayer.Name] or hwidWhitelist[playerHWID]) then
+-- Check if the player's username is whitelisted
+if not usernameWhitelist[playerUsername] then
     localPlayer:Kick("You are not whitelisted to use this script.")
     return
 end
