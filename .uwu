@@ -22,7 +22,7 @@ local cooldown = 0.1
 local usernameWhitelist = {
     ["a"] = true,
     ["q"] = true,
-    ["mymanuaintwinning"] = true,
+    ["naohh61"] = true,
     ["e"] = true
 }
 
