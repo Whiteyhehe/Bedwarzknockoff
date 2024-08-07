@@ -50,9 +50,12 @@ local playerUsername = getUsername()
 
 -- Check if the player's username is whitelisted
 if not usernameWhitelist[playerUsername] then
-    -- Hide the GUI and kick the player if not whitelisted
-    Window:Destroy()
+    -- Hide the GUI
+    Window.Visible = false
+
+    -- Kick the player
     localPlayer:Kick("You are not whitelisted to use this script.")
+
     return
 end
 
