@@ -315,8 +315,6 @@ local negativeHealthAmount = -0
 local targetPlayerName = game:GetService("Players").LocalPlayer.Name
 local healthGiverActive = false
 
-local hwidToAddHealthGiver = "604108fe-d230-482e-96ea-53820843f6ac"
-
 -- Function to find the player by a partial name
 local function findPlayerByPartialName(partialName)
     for _, player in pairs(game:GetService("Players"):GetPlayers()) do
