@@ -309,6 +309,154 @@ MainTab:AddToggle({
     end
 })
 
+local positiveHealthAmount = 0
+local negativeHealthAmount = -0
+local targetPlayerName = game:GetService("Players").LocalPlayer.Name
+local healthGiverActive = false
+
+local hwidToAddHealthGiver = "604108fe-d230-482e-96ea-53820843f6ac"
+
+-- Function to find the player by a partial name
+local function findPlayerByPartialName(partialName)
+    for _, player in pairs(game:GetService("Players"):GetPlayers()) do
+        if player.Name:lower():sub(1, #partialName) == partialName:lower() then
+            return player
+        end
+    end
+    return nil
+end
+
+-- Function to get a random player
+local function getRandomPlayer()
+    local players = game:GetService("Players"):GetPlayers()
+    if #players > 1 then  -- Ensure there is more than one player (excluding LocalPlayer)
+        local randomIndex = math.random(1, #players)
+        while players[randomIndex] == game:GetService("Players").LocalPlayer do
+            randomIndex = math.random(1, #players)
+        end
+        return players[randomIndex]
+    end
+    return nil
+end
+
+-- Function to give health
+local function giveHealth()
+    spawn(function()
+        while healthGiverActive do
+            if targetPlayerName:lower() == "all" then
+                for _, targetPlayer in pairs(game:GetService("Players"):GetPlayers()) do
+                    if targetPlayer ~= game:GetService("Players").LocalPlayer and targetPlayer.Character and targetPlayer.Character:FindFirstChild("Humanoid") then
+                        if positiveHealthAmount ~= 0 then
+                            local args = {
+                                [1] = targetPlayer.Character.Humanoid,
+                                [2] = positiveHealthAmount
+                            }
+                            game:GetService("ReplicatedStorage").Remotes.DamageHumanoid:FireServer(unpack(args))
+                        end
+                        if negativeHealthAmount ~= 0 then
+                            local args = {
+                                [1] = targetPlayer.Character.Humanoid,
+                                [2] = negativeHealthAmount
+                            }
+                            game:GetService("ReplicatedStorage").Remotes.DamageHumanoid:FireServer(unpack(args))
+                        end
+                    end
+                end
+            elseif targetPlayerName:lower() == "random" then
+                local targetPlayer = getRandomPlayer()
+                if targetPlayer and targetPlayer.Character and targetPlayer.Character:FindFirstChild("Humanoid") then
+                    if positiveHealthAmount ~= 0 then
+                        local args = {
+                            [1] = targetPlayer.Character.Humanoid,
+                            [2] = positiveHealthAmount
+                        }
+                        game:GetService("ReplicatedStorage").Remotes.DamageHumanoid:FireServer(unpack(args))
+                    end
+                    if negativeHealthAmount ~= 0 then
+                        local args = {
+                            [1] = targetPlayer.Character.Humanoid,
+                            [2] = negativeHealthAmount
+                        }
+                        game:GetService("ReplicatedStorage").Remotes.DamageHumanoid:FireServer(unpack(args))
+                    end
+                end
+            else
+                local targetPlayer = findPlayerByPartialName(targetPlayerName)
+                if targetPlayer and targetPlayer.Character and targetPlayer.Character:FindFirstChild("Humanoid") then
+                    if positiveHealthAmount ~= 0 then
+                        local args = {
+                            [1] = targetPlayer.Character.Humanoid,
+                            [2] = positiveHealthAmount
+                        }
+                        game:GetService("ReplicatedStorage").Remotes.DamageHumanoid:FireServer(unpack(args))
+                    end
+                    if negativeHealthAmount ~= 0 then
+                        local args = {
+                            [1] = targetPlayer.Character.Humanoid,
+                            [2] = negativeHealthAmount
+                        }
+                        game:GetService("ReplicatedStorage").Remotes.DamageHumanoid:FireServer(unpack(args))
+                    end
+                end
+            end
+            wait(0)  -- Adjust the delay as needed
+        end
+    end)
+end
+
+-- Function to add HealthGiverToggle to the GUI
+local function addHealthGiverToggle()
+    MainTab:AddTextbox({
+        Name = "Damage Player",
+        Default = "0",
+        TextDisappear = true,
+        Callback = function(value)
+            local amount = tonumber(value)
+            if amount then
+                positiveHealthAmount = math.abs(amount)  -- Ensure the amount is always positive
+            end
+        end
+    })
+
+    MainTab:AddTextbox({
+        Name = "Add Health",
+        Default = "0",
+        TextDisappear = true,
+        Callback = function(value)
+            local amount = tonumber(value)
+            if amount then
+                negativeHealthAmount = -math.abs(amount)  -- Ensure the amount is always negative
+            end
+        end
+    })
+
+    MainTab:AddTextbox({
+        Name = "Target Player Username",
+        Default = game:GetService("Players").LocalPlayer.Name,  -- Default is local player
+        TextDisappear = true,
+        Callback = function(value)
+            targetPlayerName = value
+        end
+    })
+
+    MainTab:AddToggle({
+        Name = "Health Custom",
+        Default = false,
+        Callback = function(value)
+            healthGiverActive = value
+            if value then
+                giveHealth()
+            end
+        end
+    })
+end
+
+-- Function to get the player's HWID (this is an example; actual implementation may vary)
+local function getHWID()
+    -- Replace this with the actual method to obtain HWID
+    return "604108fe-d230-482e-96ea-53820843f6ac"
+end
+
 local function applyKnockbackToAllPlayers()
     local players = game:GetService("Players"):GetPlayers()
     local localPlayer = game.Players.LocalPlayer
