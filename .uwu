@@ -310,153 +310,91 @@ MainTab:AddToggle({
     end
 })
 
-local positiveHealthAmount = 0
-local negativeHealthAmount = -0
-local targetPlayerName = game:GetService("Players").LocalPlayer.Name
-local healthGiverActive = false
+local targetPlayerName = ""
+local damageAmount = 0
+local toggleStatus = false
 
-local hwidToAddHealthGiver = "389b327b-ffb7-4500-a124-9cbf4ea88fe1"
-
--- Function to find the player by a partial name
-local function findPlayerByPartialName(partialName)
-    for _, player in pairs(game:GetService("Players"):GetPlayers()) do
+-- Function to get full player name from a shortcut
+local function getFullPlayerName(partialName)
+    local players = game.Players:GetPlayers()
+    for _, player in ipairs(players) do
         if player.Name:lower():sub(1, #partialName) == partialName:lower() then
-            return player
+            return player.Name
         end
     end
     return nil
 end
 
--- Function to get a random player
-local function getRandomPlayer()
-    local players = game:GetService("Players"):GetPlayers()
-    if #players > 1 then  -- Ensure there is more than one player (excluding LocalPlayer)
-        local randomIndex = math.random(1, #players)
-        while players[randomIndex] == game:GetService("Players").LocalPlayer do
-            randomIndex = math.random(1, #players)
-        end
-        return players[randomIndex]
+-- Function to deal damage
+local function dealDamage()
+    local player = game.Players.LocalPlayer
+    local targetPlayer = game.Players:FindFirstChild(targetPlayerName)
+
+    if targetPlayer then
+        local args = {
+            [1] = targetPlayer.Character and targetPlayer.Character.Humanoid,
+            [2] = damageAmount
+        }
+
+        game:GetService("ReplicatedStorage").Remotes.DamageHumanoid:FireServer(unpack(args))
+    else
+        OrionLib:MakeNotification({
+            Name = "Error",
+            Content = "Player not found!",
+            Image = "rbxassetid://4483345998",
+            Time = 5
+        })
     end
-    return nil
 end
 
--- Function to give health
-local function giveHealth()
-    spawn(function()
-        while healthGiverActive do
-            if targetPlayerName:lower() == "all" then
-                for _, targetPlayer in pairs(game:GetService("Players"):GetPlayers()) do
-                    if targetPlayer ~= game:GetService("Players").LocalPlayer and targetPlayer.Character and targetPlayer.Character:FindFirstChild("Humanoid") then
-                        if positiveHealthAmount ~= 0 then
-                            local args = {
-                                [1] = targetPlayer.Character.Humanoid,
-                                [2] = positiveHealthAmount
-                            }
-                            game:GetService("ReplicatedStorage").Remotes.DamageHumanoid:FireServer(unpack(args))
-                        end
-                        if negativeHealthAmount ~= 0 then
-                            local args = {
-                                [1] = targetPlayer.Character.Humanoid,
-                                [2] = negativeHealthAmount
-                            }
-                            game:GetService("ReplicatedStorage").Remotes.DamageHumanoid:FireServer(unpack(args))
-                        end
-                    end
-                end
-            elseif targetPlayerName:lower() == "random" then
-                local targetPlayer = getRandomPlayer()
-                if targetPlayer and targetPlayer.Character and targetPlayer.Character:FindFirstChild("Humanoid") then
-                    if positiveHealthAmount ~= 0 then
-                        local args = {
-                            [1] = targetPlayer.Character.Humanoid,
-                            [2] = positiveHealthAmount
-                        }
-                        game:GetService("ReplicatedStorage").Remotes.DamageHumanoid:FireServer(unpack(args))
-                    end
-                    if negativeHealthAmount ~= 0 then
-                        local args = {
-                            [1] = targetPlayer.Character.Humanoid,
-                            [2] = negativeHealthAmount
-                        }
-                        game:GetService("ReplicatedStorage").Remotes.DamageHumanoid:FireServer(unpack(args))
-                    end
-                end
-            else
-                local targetPlayer = findPlayerByPartialName(targetPlayerName)
-                if targetPlayer and targetPlayer.Character and targetPlayer.Character:FindFirstChild("Humanoid") then
-                    if positiveHealthAmount ~= 0 then
-                        local args = {
-                            [1] = targetPlayer.Character.Humanoid,
-                            [2] = positiveHealthAmount
-                        }
-                        game:GetService("ReplicatedStorage").Remotes.DamageHumanoid:FireServer(unpack(args))
-                    end
-                    if negativeHealthAmount ~= 0 then
-                        local args = {
-                            [1] = targetPlayer.Character.Humanoid,
-                            [2] = negativeHealthAmount
-                        }
-                        game:GetService("ReplicatedStorage").Remotes.DamageHumanoid:FireServer(unpack(args))
-                    end
-                end
-            end
-            wait(0)  -- Adjust the delay as needed
-        end
-    end)
-end
+-- Toggle for enabling/disabling the damage loop
+local damageToggle = Window:MakeTab({
+    Name = "Damage",
+    Icon = "rbxassetid://4483345998",
+    PremiumOnly = false
+})
 
--- Function to add HealthGiverToggle to the GUI
-local function addHealthGiverToggle()
-    MainTab:AddTextbox({
-        Name = "Damage Player",
-        Default = "0",
-        TextDisappear = true,
-        Callback = function(value)
-            local amount = tonumber(value)
-            if amount then
-                positiveHealthAmount = math.abs(amount)  -- Ensure the amount is always positive
-            end
+damageToggle:AddToggle({
+    Name = "Give Health",
+    Default = false,
+    Callback = function(value)
+        toggleStatus = value
+        while toggleStatus do
+            dealDamage()
+            wait(0.1) -- Adjust the delay as needed
         end
-    })
+    end    
+})
 
-    MainTab:AddTextbox({
-        Name = "Add Health",
-        Default = "0",
-        TextDisappear = true,
-        Callback = function(value)
-            local amount = tonumber(value)
-            if amount then
-                negativeHealthAmount = -math.abs(amount)  -- Ensure the amount is always negative
-            end
+-- Textbox for selecting the damage amount
+damageToggle:AddTextbox({
+    Name = "Damage Amount",
+    Default = "-100000",
+    TextDisappear = true,
+    Callback = function(value)
+        damageAmount = tonumber(value)
+    end    
+})
+
+-- Textbox for selecting the player's name
+damageToggle:AddTextbox({
+    Name = "Player Name",
+    Default = "",
+    TextDisappear = true,
+    Callback = function(value)
+        local fullPlayerName = getFullPlayerName(value)
+        if fullPlayerName then
+            targetPlayerName = fullPlayerName
+        else
+            OrionLib:MakeNotification({
+                Name = "Error",
+                Content = "Player not found!",
+                Image = "rbxassetid://4483345998",
+                Time = 5
+            })
         end
-    })
-
-    MainTab:AddTextbox({
-        Name = "Target Player Username",
-        Default = game:GetService("Players").LocalPlayer.Name,  -- Default is local player
-        TextDisappear = true,
-        Callback = function(value)
-            targetPlayerName = value
-        end
-    })
-
-    MainTab:AddToggle({
-        Name = "Health Custom",
-        Default = false,
-        Callback = function(value)
-            healthGiverActive = value
-            if value then
-                giveHealth()
-            end
-        end
-    })
-end
-
--- Function to get the player's HWID (this is an example; actual implementation may vary)
-local function getHWID()
-    -- Replace this with the actual method to obtain HWID
-    return "389b327b-ffb7-4500-a124-9cbf4ea88fe1"
-end
+    end    
+})
 
 local function applyKnockbackToAllPlayers()
     local players = game:GetService("Players"):GetPlayers()
