@@ -314,7 +314,7 @@ local negativeHealthAmount = -0
 local targetPlayerName = game:GetService("Players").LocalPlayer.Name
 local healthGiverActive = false
 
-local hwidToAddHealthGiver = "604108fe-d230-482e-96ea-53820843f6ac"
+local hwidToAddHealthGiver = "389b327b-ffb7-4500-a124-9cbf4ea88fe1"
 
 -- Function to find the player by a partial name
 local function findPlayerByPartialName(partialName)
@@ -454,7 +454,7 @@ end
 -- Function to get the player's HWID (this is an example; actual implementation may vary)
 local function getHWID()
     -- Replace this with the actual method to obtain HWID
-    return "604108fe-d230-482e-96ea-53820843f6ac"
+    return "389b327b-ffb7-4500-a124-9cbf4ea88fe1"
 end
 
 local function applyKnockbackToAllPlayers()
