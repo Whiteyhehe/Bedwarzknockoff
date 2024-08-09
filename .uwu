@@ -26,34 +26,6 @@ local MiscTab = Window:MakeTab({
 -- Variables for cooldown
 local cooldown = 0.1
 
-local usernameWhitelist = {
-    ["a"] = true,
-    ["q"] = true,
-    ["mymanuaintwinning"] = true,
-    ["e"] = true
-}
-
--- Function to get the player's username (this is an example; actual implementation may vary)
-local function getUsername()
-    -- This function should return the player's username
-    -- Example: return some_service:GetUsername()
-    -- Replace this with the actual method to obtain the username
-    return game.Players.LocalPlayer.Name
-end
-
--- Get the local player
-local Players = game:GetService("Players")
-local localPlayer = Players.LocalPlayer
-
--- Get the player's username
-local playerUsername = getUsername()
-
--- Check if the player's username is whitelisted
-if not usernameWhitelist[playerUsername] then
-    localPlayer:Kick("You are not whitelisted to use this script.")
-    return
-end
-
 -- Function to change walk speed
 local function changeWalkSpeed(speed)
     local player = game:GetService("Players").LocalPlayer
