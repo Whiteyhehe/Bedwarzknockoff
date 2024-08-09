@@ -403,7 +403,7 @@ local function giveHealth()
     end)
 end
 
--- Function to add HealthGiverToggle to the GUi
+
     MainTab:AddTextbox({
         Name = "Damage Player",
         Default = "0",
