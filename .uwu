@@ -54,9 +54,10 @@ local function breakAllBeds()
         while breakAllBedsActive do
             for _, bed in pairs(workspace.Map.Beds:GetChildren()) do
                 local args = {
-                    [1] = bed
+                    [1] = bed,
+                    [2] = "Wooden Pickaxe"
                 }
-                game:GetService("ReplicatedStorage").Remotes.DestroyBed:FireServer(unpack(args))
+                game:GetService("ReplicatedStorage").Remotes.DamageBlock:InvokeServer(unpack(args))
                 wait(0.1) -- Slight delay to avoid overwhelming the server
             end
             wait(0.1)
