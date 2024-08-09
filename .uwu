@@ -1,5 +1,5 @@
 -- Initialize Orion Library
-local OrionLib = loadstring(game:HttpGet("https://raw.githubusercontent.com/YourRepository/OrionLib/main/OrionLib.lua"))()  -- Ensure you have the correct URL for OrionLib
+local OrionLib = loadstring(game:HttpGet(('https://raw.githubusercontent.com/shlexware/Orion/main/source')))()  -- Ensure you have the correct URL for OrionLib
 
 -- Create the window
 local Window = OrionLib:MakeWindow({
